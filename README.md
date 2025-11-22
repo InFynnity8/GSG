@@ -1,4 +1,4 @@
-# <img src="GSG.png" alt="A God Seeking Generation Logo" width="120"/>
+# <img src="public/GSG.png" alt="A God Seeking Generation Logo" width="120"/>
 
 # A God Seeking Generation — Official Website
 

@@ -71,6 +71,7 @@ export default function Navbar() {
         </div>
       </div>
       <div
+        data-animate="fade-up"
         className={`w-full z-100 shadow-sm sticky top-0 transition-all duration-400 ${
           show
             ? "translate-y-0 opacity-100 pointer-events-auto"
@@ -139,11 +140,11 @@ export default function Navbar() {
                   Stores
                 </Link>
                 <Link
-                  href="/ministries"
+                  href="/departments"
                   className="hover:underline"
                   onClick={() => setMobileOpen(false)}
                 >
-                  Other Links
+                  Departments
                 </Link>
                 <Link
                   href="/give"

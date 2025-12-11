@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 const UpcomingEvents = () => {
   return (
-     <section className="w-full py-20 bg-accent/10">
+     <section className="w-full py-20 bg-slate-50">
         <div className="max-w-6xl mx-auto px-6">
           <h3 className="text-2xl font-bold">Upcoming Events</h3>
           <p className="mt-2 text-muted-foreground">
@@ -13,28 +13,28 @@ const UpcomingEvents = () => {
           </p>
 
           <ul className="mt-6 space-y-4">
-            <li className="p-4 rounded-lg border bg-background">
+            <li className="p-4 rounded-lg border bg-white">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="font-semibold">Community Potluck</p>
                   <p className="text-sm text-muted-foreground">Sat • Jan 10 • 5:30pm</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Button asChild variant="outline" size="sm">
+                  <Button asChild variant="outline" size="sm" className="bg-white hover:bg-primary"  >
                     <Link href="/events">Details</Link>
                   </Button>
                 </div>
               </div>
             </li>
 
-            <li className="p-4 rounded-lg border bg-background">
+            <li className="p-4 rounded-lg border bg-white">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="font-semibold">Worship Night</p>
                   <p className="text-sm text-muted-foreground">Fri • Feb 6 • 7:00pm</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Button asChild variant="outline" size="sm">
+                  <Button asChild variant="outline" size="sm" className="bg-white hover:bg-primary"  >
                     <Link href="/events">Details</Link>
                   </Button>
                 </div>

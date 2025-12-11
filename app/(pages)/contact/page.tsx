@@ -19,7 +19,7 @@ export default function Contact() {
               {/* Replace the src with your real Google Maps / Mapbox embed URL */}
               <iframe
                 title="GSG Branches Map - Kwahu, Eastern Region"
-                src="https://www.google.com/maps?q=Kwahu,+Eastern+Region,+Ghana&output=embed"
+                src="https://www.google.com/maps?q=Eastern+Region,+Ghana&output=embed"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}

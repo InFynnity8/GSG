@@ -46,7 +46,7 @@ export default function NavMenu() {
    
         <NavigationMenuItem>
           <NavigationMenuTrigger>About</NavigationMenuTrigger>
-          <NavigationMenuContent>
+          <NavigationMenuContent className="bg-white">
             <ul className="grid gap-4 w-[200px] p-4">
               <ListItem title="History" href="/about/history" />
               <ListItem title="Leadership" href="/about/leadership" />
@@ -59,7 +59,7 @@ export default function NavMenu() {
         
         <NavigationMenuItem>
           <NavigationMenuTrigger>Stores</NavigationMenuTrigger>
-          <NavigationMenuContent>
+          <NavigationMenuContent className="bg-white">
             <ul className="grid gap-4 w-[200px] p-4">
               <ListItem title="Books" href="/stores/books" />
               <ListItem title="Merchandise" href="/stores/merch" />

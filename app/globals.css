@@ -46,13 +46,13 @@
   --radius: 0.5rem;
 
   /* Base backgrounds */
-  --background: oklch(0.95 0.03 230);         /* soft light blue */
+  --background: oklch(98.398% 0.00924 232.801);         /* soft light blue */
   --foreground: oklch(0.15 0.04 260);         /* deep navy text */
 
   --card: oklch(0.97 0.04 230);               /* slightly brighter card bg */
   --card-foreground: oklch(0.15 0.04 260);    /* navy for card text */
 
-  --popover: oklch(0.97 0.04 230);
+  --popover: oklch(97.474% 0.02014 204.72);
   --popover-foreground: oklch(0.15 0.04 260);
 
   /* PRIMARY – modern deep blue */

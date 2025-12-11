@@ -96,7 +96,7 @@ export default function EventsPage() {
           </p>
         </header>
 
-        <div className="mt-8 grid md:grid-cols-4 gap-6">
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
           <aside className="md:col-span-1">
             <div className="p-4 bg-white border rounded-md shadow-sm">
               <label className="block text-sm font-medium">Search</label>
@@ -140,12 +140,12 @@ export default function EventsPage() {
           </aside>
 
           <section className="md:col-span-3">
-            <div className="h-[70vh] overflow-auto p-4">
+            <div className="h-[70vh] overflow-auto md:p-4">
               <div className="relative">
                 {/* vertical connector line */}
-                <div className="absolute left-12 top-6 bottom-6 w-px bg-slate-200" />
+                <div className="absolute left-8 top-6 bottom-6 w-px bg-slate-200" />
 
-                <div className="space-y-12 pr-6">
+                <div className="space-y-12 md:pr-6">
                   {filtered.length === 0 ? (
                     <div className="p-6 bg-white border rounded-md text-center text-muted-foreground">No events match your filters.</div>
                   ) : (
@@ -159,20 +159,20 @@ export default function EventsPage() {
                           </div>
 
                           {/* date to the left of the dot - stacked column */}
-                          <div className="absolute left-0 top-0 w-28 text-right flex flex-col items-end">
+                          <div className="absolute -left-4 top-0 w-28 text-right flex flex-col items-end">
                             <div className="text-sm text-muted-foreground uppercase">{parts.month}</div>
                             <div className="text-2xl font-semibold">{parts.day}</div>
                             <div className="text-sm text-muted-foreground">{parts.year}</div>
                           </div>
 
-                          <div className="ml-18 bg-white border rounded-md p-4 flex items-start justify-between gap-4 shadow-sm">
+                          <div className="ml-16 bg-white border rounded-md p-4 flex md:flex-row flex-col items-start justify-between gap-4 shadow-sm">
                             <div className="flex-1">
                               <h3 className="text-lg font-semibold">{e.title}</h3>
                               <div className="text-sm text-muted-foreground mt-1">{new Date(e.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                               <p className="mt-2 text-sm text-muted-foreground">{e.description}</p>
                             </div>
 
-                            <div className="w-36 h-24 bg-slate-100 rounded-md flex items-center justify-center text-slate-400">Image</div>
+                            <div className="w-full md:w-36 h-24 bg-slate-100 rounded-md flex items-center justify-center text-slate-400">Image</div>
                           </div>
                         </article>
                       )

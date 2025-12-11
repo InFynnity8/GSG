@@ -22,15 +22,15 @@ export default function AnimateLayout({ children }: { children: React.ReactNode 
         { autoAlpha: 1, y: 0, duration: 0.55, ease: "power2.out" }
       );
 
-      // fade-up for elements with data-animate="fade-up"
-      const fadeUps = self.selector("[data-animate=\"fade-up\"]");
-      if (fadeUps && fadeUps.length) {
+      // fade-up for elements with data-animate="fade-up" (scoped to this container)
+      const fadeUps = gsap.utils.toArray("[data-animate=\"fade-up\"]", containerRef.current) as Element[];
+      if (fadeUps.length) {
         gsap.from(fadeUps, { y: 14, autoAlpha: 0, duration: 0.55, ease: "power2.out", stagger: 0.05 });
       }
 
       // scroll-triggered fade-in for elements with data-animate="scroll-fade"
-      const scrollFades = self.selector("[data-animate=\"scroll-fade\"]");
-      if (scrollFades && scrollFades.length) {
+      const scrollFades = gsap.utils.toArray("[data-animate=\"scroll-fade\"]", containerRef.current) as Element[];
+      if (scrollFades.length) {
         scrollFades.forEach((el: Element) => {
           gsap.fromTo(
             el,
@@ -52,14 +52,14 @@ export default function AnimateLayout({ children }: { children: React.ReactNode 
       }
 
       // breathing subtle pulse for elements with data-animate="breath"
-      const breaths = self.selector("[data-animate=\"breath\"]");
-      if (breaths && breaths.length) {
+      const breaths = gsap.utils.toArray("[data-animate=\"breath\"]", containerRef.current) as Element[];
+      if (breaths.length) {
         gsap.to(breaths, { scale: 1.02, duration: 2.4, yoyo: true, repeat: -1, ease: "sine.inOut" });
       }
 
       // pop reveals
-      const pops = self.selector("[data-animate=\"pop\"]");
-      if (pops && pops.length) {
+      const pops = gsap.utils.toArray("[data-animate=\"pop\"]", containerRef.current) as Element[];
+      if (pops.length) {
         gsap.from(pops, { scale: 0.96, autoAlpha: 0, duration: 0.45, stagger: 0.04, ease: "back.out(1.1)" });
       }
     }, containerRef);

@@ -1,12 +1,15 @@
 import HeroCarousel from "@/components/sections/HeroCarousel";
+import About from "@/components/sections/About";
+import UpcomingEvents from "@/components/sections/UpcomingEvents";
+import Give from "@/components/sections/Give";
 
 export default function Home() {
   return (
     <div className="">
-    <HeroCarousel/>
-    <section className="w-full p-50 flex items-center justify-center bg-white">Nothing here yet</section>
-    <section className="w-full p-50 flex items-center justify-center">Nothing here yet</section>
-    <section className="w-full p-50 flex items-center justify-center bg-white">Nothing here yet</section>
+      <HeroCarousel />
+      <About />
+      <UpcomingEvents />
+      <Give />
     </div>
   );
 }

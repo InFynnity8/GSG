@@ -61,9 +61,8 @@ export default function NavMenu() {
           <NavigationMenuTrigger>Stores</NavigationMenuTrigger>
           <NavigationMenuContent className="bg-white">
             <ul className="grid gap-4 w-[200px] p-4">
-              <ListItem title="Books" href="/stores/books" />
-              <ListItem title="Merchandise" href="/stores/merch" />
-              <ListItem title="Media" href="/stores/media" />
+              <ListItem title="Books" href="/store/books" />
+              <ListItem title="Merchandise" href="/store/merchandise" />
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>

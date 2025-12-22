@@ -8,6 +8,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import { IoIosArrowDown } from "react-icons/io";
 import { useCallback, useEffect, useState } from "react";
@@ -61,13 +67,17 @@ export default function Navbar() {
             />
             <FaTwitter className="hover:opacity-80 cursor-pointer" size={18} />
           </div>
-
-          <Button
-            variant="outline"
-            className="text-primary-foreground cursor-pointer bg-transparent hover:text-primary hover:bg-white flex items-center space-x-2"
+          <Link
+            href="https://gsg.online.church/"
+            rel="noopener noreferrer"
           >
-            <span className="text-sm">Live Service</span>
-          </Button>
+            <Button
+              variant="outline"
+              className="text-primary-foreground cursor-pointer bg-transparent hover:text-primary hover:bg-white flex items-center space-x-2"
+            >
+              <span className="text-sm">Live Service</span>
+            </Button>{" "}
+          </Link>
         </div>
       </div>
       <div
@@ -107,7 +117,7 @@ export default function Navbar() {
           </div>
         </div>
         {mobileOpen && (
-          <div className="fixed inset-0 bg-black/40 z-100">
+          <div className="md:hidden fixed inset-0 bg-black/40 z-100">
             <div className="fixed flex flex-col top-0 right-0 w-full h-screen bg-white shadow-xl p-6">
               <Button
                 onClick={() => setMobileOpen(false)}
@@ -117,7 +127,7 @@ export default function Navbar() {
                 <FiX />
               </Button>
 
-              <div className="md:hidden flex flex-col gap-6 text-lg text-primary">
+              <div className="md:hidden flex flex-col gap-6 text-lg text-primary h-screen overflow-y-auto">
                 <Link
                   href="/"
                   className="hover:underline"
@@ -125,20 +135,75 @@ export default function Navbar() {
                 >
                   Home
                 </Link>
-                <Link
-                  href="/about"
-                  className="hover:underline"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  About
-                </Link>
-                <Link
-                  href="/store"
-                  className="hover:underline"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Stores
-                </Link>
+                <Accordion type="multiple" className="grid gap-6">
+                  <AccordionItem className="border-none " value="item-1">
+                    <AccordionTrigger className="text-lg text-primary">
+                      About
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="grid gap-4 w-[200px] pt-4 px-4 text-lg">
+                        <Link
+                          onClick={() => setMobileOpen(false)}
+                          title="History"
+                          href="/about/history"
+                          className="hover:underline"
+                        >
+                          History
+                        </Link>
+                        <Link
+                          onClick={() => setMobileOpen(false)}
+                          title="Leadership"
+                          className="hover:underline"
+                          href="/about/leadership"
+                        >
+                          Leadership
+                        </Link>
+                        <Link
+                          onClick={() => setMobileOpen(false)}
+                          title="Mission"
+                          className="hover:underline"
+                          href="/about/mission"
+                        >
+                          Mission
+                        </Link>
+                        <Link
+                          onClick={() => setMobileOpen(false)}
+                          title="Branches"
+                          className="hover:underline"
+                          href="/about/branches"
+                        >
+                          Branches
+                        </Link>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem value="item-2">
+                    <AccordionTrigger className="text-lg text-primary">
+                      Store
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <ul className="grid gap-4 w-[200px]  pt-4 px-4 text-lg">
+                        <Link
+                          onClick={() => setMobileOpen(false)}
+                          title="History"
+                          className="hover:underline"
+                          href="/store/books"
+                        >
+                          Books
+                        </Link>
+                        <Link
+                          onClick={() => setMobileOpen(false)}
+                          title="Leadership"
+                          className="hover:underline"
+                          href="/store/merchandise"
+                        >
+                          Merchandise
+                        </Link>
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+
                 <Link
                   href="/departments"
                   className="hover:underline"

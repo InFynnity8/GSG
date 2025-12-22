@@ -69,6 +69,7 @@ export default function Navbar() {
           </div>
           <Link
             href="https://gsg.online.church/"
+            target="_blank"
             rel="noopener noreferrer"
           >
             <Button

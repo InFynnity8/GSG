@@ -23,8 +23,8 @@ function About() {
               </div>
             </div>
             <div>
-              <div className="h-64 rounded-lg flex items-center justify-center ">
-                <Image src="/caro3.jpeg" alt="About GSG" width={500} height={500} className="rounded-lg object-cover"/>
+              <div className="max-h-80 rounded-lg flex items-center justify-center ">
+                <Image src="/caro7.jpg" alt="About GSG" width={500} height={500} className="rounded-lg object-cover"/>
               </div>
             </div>
           </div>

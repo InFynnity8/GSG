@@ -8,19 +8,19 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 const slides: { src: string; title?: string; subtitle?: string; type: string }[] = [
 
     {
-        src: "/caro3.jpeg",
+        src: "/caro4.jpg",
         title: "Welcome",
         subtitle: "Join our vibrant and welcoming community, where faith, fellowship, and growth come together to create a meaningful spiritual journey for everyone.",
         type: "image"
     },
     {
-        src: "/worship.jpg",
+        src: "/caro6.jpg",
         title: "Worship",
         subtitle: "Experience our inspiring worship services, filled with uplifting music, heartfelt prayers, and teachings that guide you closer to God in every aspect of life.",
         type: "image"
     },
     {
-        src: "/caro2.jpeg",
+        src: "/caro8.jpg",
         title: "Outreach",
         subtitle: "Be part of our outreach initiatives that serve the community, offering support, love, and practical help to those in need, making a real impact around us.",
         type: "image"

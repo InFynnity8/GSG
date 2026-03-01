@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 const Give = () => {
   return (
-    <section className="w-full py-20 bg-white">
+    <section className="w-full py-20 bg-slate-50">
         <div className="max-w-6xl mx-auto px-6 text-center">
           <h3 className="text-2xl font-bold">Support the Mission</h3>
           <p className="mt-2 text-muted-foreground max-w-2xl mx-auto">

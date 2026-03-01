@@ -1,32 +1,11 @@
 "use client"
 
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { EVENTS } from "@/lib/events-data"
+import { supabase } from '../../../utils/supabase'
+import { EventItem } from "@/types/events"
 
-type EventItem = {
-  id: string
-  title: string
-  date: string // ISO
-  type: string
-  description: string
-  image?: string | null
-}
-
-// generate a long list of sample events so the timeline is scrollable
-const SAMPLE_EVENTS: EventItem[] = Array.from({ length: 60 }).map((_, i) => {
-  const d = new Date()
-  // spread events over past and future (-40 to +80 days)
-  d.setDate(d.getDate() + (i - 20))
-  return {
-    id: `ev-${i}`,
-    title: [`Community Potluck`, `Worship Night`, `Youth Outreach`, `Leadership Training`][i % 4] + ` ${i + 1}`,
-    date: d.toISOString(),
-    type: ["Community", "Worship", "Outreach", "Training"][i % 4],
-    description:
-      `This is a detailed description for event ${i + 1}. Join us for fellowship, worship, and service — all are welcome.`,
-    image: null,
-  }
-})
 
 function formatDate(iso: string) {
   const d = new Date(iso)
@@ -54,10 +33,27 @@ export default function EventsPage() {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([])
   const [showUpcomingOnly, setShowUpcomingOnly] = useState(true)
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
+  const [events, setEvents] = useState<EventItem[]>([])
+
+
+    useEffect(() => {
+    async function getEvents() {
+      const { data: events } = await supabase.from('events').select()
+
+      if (events && events.length > 1) {
+        setEvents(events)
+      }
+    }
+
+    console.log("Fetching events...")
+    getEvents()
+    console.log("Events fetched:", events)
+  }, [events])
+
 
   const types = useMemo(() => {
     const set = new Set<string>()
-    SAMPLE_EVENTS.forEach((e) => set.add(e.type))
+    EVENTS.forEach((e) => set.add(e.type))
     return Array.from(set)
   }, [])
 
@@ -65,7 +61,7 @@ export default function EventsPage() {
     const q = query.trim().toLowerCase()
     const now = Date.now()
 
-    return SAMPLE_EVENTS.filter((e) => {
+    return EVENTS.filter((e) => {
       if (showUpcomingOnly && new Date(e.date).getTime() < now) return false
       if (selectedTypes.length > 0 && !selectedTypes.includes(e.type))
         return false
@@ -165,14 +161,14 @@ export default function EventsPage() {
                             <div className="text-sm text-muted-foreground">{parts.year}</div>
                           </div>
 
-                          <div className="ml-16 bg-white border rounded-md p-4 flex md:flex-row flex-col items-start justify-between gap-4 shadow-sm">
+                          <div className="ml-16 bg-white border rounded-md p-4 flex md:flex-row flex-col items-center justify-between gap-4 shadow-sm">
                             <div className="flex-1">
                               <h3 className="text-lg font-semibold">{e.title}</h3>
                               <div className="text-sm text-muted-foreground mt-1">{new Date(e.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                               <p className="mt-2 text-sm text-muted-foreground">{e.description}</p>
                             </div>
 
-                            <div className="w-full md:w-36 h-24 bg-slate-100 rounded-md flex items-center justify-center text-slate-400">Image</div>
+                            <div className="w-full md:w-36 min-h-24 bg-slate-100 rounded-md flex items-center justify-center text-slate-400">Image</div>
                           </div>
                         </article>
                       )

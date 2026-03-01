@@ -18,7 +18,7 @@ function About() {
               </p>
               <div className="mt-6">
                 <Button asChild>
-                  <Link href="/about">Learn more</Link>
+                  <Link href="/about/history">Learn more</Link>
                 </Button>
               </div>
             </div>

@@ -1,23 +1,15 @@
 "use client"
 
 import React, { useEffect, useMemo, useState } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { EVENTS } from "@/lib/events-data"
 import { supabase } from '../../../utils/supabase'
 import { EventItem } from "@/types/events"
+import { Calendar } from "@/components/ui/calendar"
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { X as XIcon } from "lucide-react"
 
 
-function formatDate(iso: string) {
-  const d = new Date(iso)
-  return d.toLocaleString(undefined, {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  })
-}
 
 function formatDateParts(iso: string) {
   const d = new Date(iso)
@@ -34,52 +26,81 @@ export default function EventsPage() {
   const [showUpcomingOnly, setShowUpcomingOnly] = useState(true)
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
   const [events, setEvents] = useState<EventItem[]>([])
+  const [selectedDay, setSelectedDay] = useState<Date | undefined>(undefined)
+  const [showCalendarDrawer, setShowCalendarDrawer] = useState(false)
 
 
-    useEffect(() => {
+  useEffect(() => {
     async function getEvents() {
-      const { data: events } = await supabase.from('events').select()
-
-      if (events && events.length > 1) {
-        setEvents(events)
+      let query = supabase.from("events").select("*")
+      if (showUpcomingOnly) {
+        const now = new Date().toISOString()
+        query = query.gt("date", now)
       }
+
+      const { data, error } = await query
+
+      if (error) {
+        console.error("error fetching events", error)
+        return
+      }
+      setEvents((data as EventItem[]) ?? [])
     }
 
-    console.log("Fetching events...")
     getEvents()
-    console.log("Events fetched:", events)
-  }, [events])
+  }, [showUpcomingOnly])
 
 
   const types = useMemo(() => {
     const set = new Set<string>()
-    EVENTS.forEach((e) => set.add(e.type))
+    events.forEach((e) => set.add(e.type))
     return Array.from(set)
-  }, [])
+  }, [events])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     const now = Date.now()
 
-    return EVENTS.filter((e) => {
-      if (showUpcomingOnly && new Date(e.date).getTime() < now) return false
-      if (selectedTypes.length > 0 && !selectedTypes.includes(e.type))
-        return false
-      if (!q) return true
-      return (
-        e.title.toLowerCase().includes(q) ||
-        e.description.toLowerCase().includes(q) ||
-        e.type.toLowerCase().includes(q)
-      )
-    }).sort((a, b) => {
-      if (sortOrder === "asc") return new Date(a.date).getTime() - new Date(b.date).getTime()
-      return new Date(b.date).getTime() - new Date(a.date).getTime()
-    })
-  }, [query, selectedTypes, showUpcomingOnly, sortOrder])
+    return events
+      .filter((e) => {
+        // server already filters future events when the checkbox is active,
+        // but we'll keep this as a fallback.
+        if (showUpcomingOnly && new Date(e.date).getTime() < now) return false
+        if (selectedTypes.length > 0 && !selectedTypes.includes(e.type))
+          return false
+        if (!q) return true
+        return (
+          e.title.toLowerCase().includes(q) ||
+          e.description.toLowerCase().includes(q) ||
+          e.type.toLowerCase().includes(q)
+        )
+      })
+      .sort((a, b) => {
+        if (sortOrder === "asc")
+          return new Date(a.date).getTime() - new Date(b.date).getTime()
+        return new Date(b.date).getTime() - new Date(a.date).getTime()
+      })
+  }, [query, selectedTypes, showUpcomingOnly, sortOrder, events])
 
   function toggleType(t: string) {
     setSelectedTypes((prev) => (prev.includes(t) ? prev.filter((x) => x !== t) : [...prev, t]))
   }
+
+  const eventDates = useMemo(() => {
+    return events.map((e) => new Date(e.date))
+  }, [events])
+
+  const eventsOnSelectedDay = useMemo(() => {
+    if (!selectedDay) return []
+    const start = new Date(selectedDay)
+    start.setHours(0, 0, 0, 0)
+    const end = new Date(start)
+    end.setDate(end.getDate() + 1)
+    return events.filter((e) => {
+      const d = new Date(e.date)
+      return d >= start && d < end
+    })
+  }, [selectedDay, events])
 
   return (
     <div className="min-h-[75vh] py-20 bg-slate-50">
@@ -128,9 +149,48 @@ export default function EventsPage() {
               </div>
 
               <div className="mt-6">
-                <Button asChild>
-                  <a href="#calendar" className="w-full inline-block text-center">View calendar</a>
-                </Button>
+                <Dialog open={showCalendarDrawer} onOpenChange={setShowCalendarDrawer}>
+                  <DialogTrigger asChild>
+                    <Button className="w-full">View calendar</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Event Calendar</DialogTitle>
+                    </DialogHeader>
+                    <Calendar
+                      mode="single"
+                      selected={selectedDay}
+                      onSelect={setSelectedDay}
+                      modifiers={{ hasEvent: eventDates }}
+                      modifiersClassNames={{ hasEvent: "bg-primary text-primary-foreground" }}
+                    />
+                    {selectedDay && eventsOnSelectedDay.length > 0 && (
+                      <div className="mt-4">
+                        <h3 className="font-semibold">
+                          Events on {selectedDay.toLocaleDateString()}
+                        </h3>
+                        <ul className="mt-2 space-y-2">
+                          {eventsOnSelectedDay.map((e) => (
+                            <li key={e.id} className="border rounded p-2 bg-white flex justify-between items-center">
+                              <div>
+                                <p className="font-semibold">{e.title}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {new Date(e.date).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })}
+                                </p>
+                              </div>
+                              <Button asChild variant="outline" size="sm" className="bg-white hover:bg-primary">
+                                <Link href="/events">Details</Link>
+                              </Button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </aside>
@@ -178,8 +238,10 @@ export default function EventsPage() {
               </div>
             </div>
           </section>
+
         </div>
       </div>
     </div>
+
   )
 }

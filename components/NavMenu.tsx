@@ -23,7 +23,10 @@ function ListItem({
   return (
     <li>
       <NavigationMenuLink asChild>
-        <Link href={href} className="text-sm font-medium text-foreground hover:text-primary">
+        <Link
+          href={href}
+          className="text-sm font-medium text-foreground rounded-md px-2 py-1 hover:bg-primary hover:text-primary-foreground"
+        >
           {title}
         </Link>
       </NavigationMenuLink>

@@ -1,18 +1,17 @@
 import Link from "next/link"
+import { PageCover } from "@/components/ui/page-cover"
 
 export default function Page() {
   return (
-    <div className="min-h-[75vh] py-20 bg-slate-50">
-      <div className="max-w-5xl mx-auto px-6">
-        <header className="text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold">Ministry Departments</h1>
-          <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
-            God Seeking Generation is organised into focused departments that
-            serve the congregation and the neighbourhood. Below are our core
-            departments, their purpose, meeting times, and the best way to get
-            involved.
-          </p>
-        </header>
+    <>
+      <PageCover
+        imageUrl="/images/coverphoto.jpg"
+        title="Ministry Departments"
+        subtitle="Learn about the teams that serve our congregation and neighbourhood."
+      />
+      <div className="min-h-[75vh] py-20 bg-slate-50">
+        <div className="max-w-5xl mx-auto px-6">
+
 
         <div className="p-6 mt-10 shadow-sm border rounded-lg bg-white">
           <section>
@@ -97,5 +96,6 @@ export default function Page() {
         </div>
       </div>
     </div>
+    </>
   )
 }

@@ -1,16 +1,16 @@
+import { PageCover } from "@/components/ui/page-cover"
+
 export default function Page() {
   return (
-    <div className="min-h-[75vh] py-20 bg-slate-50">
-      <div className="max-w-5xl mx-auto px-6">
-        <header className="text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold">Leadership</h1>
-          <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
-            GSG is led by a team of pastors, staff, and volunteer elders who
-            share a commitment to shepherding the community with humility and
-            service. Each leader brings a unique background in ministry,
-            education, and social engagement.
-          </p>
-        </header>
+    <>
+      <PageCover
+        imageUrl="/images/coverphoto.jpg"
+        title="Leadership"
+        subtitle="Meet the team guiding GSG with humility, service and vision."
+      />
+      <div className="min-h-[75vh] py-20 bg-slate-50">
+        <div className="max-w-5xl mx-auto px-6">
+        
 
         <div className="p-6 mt-10 shadow-sm border rounded-lg bg-white">
           <section className="mt-2 grid md:grid-cols-3 gap-6">
@@ -47,5 +47,6 @@ export default function Page() {
         </div>
       </div>
     </div>
+    </>
   )
 }

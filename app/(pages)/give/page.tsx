@@ -1,18 +1,17 @@
 import Link from "next/link"
+import { PageCover } from "@/components/ui/page-cover"
 
 export default function Donate() {
   return (
-    <div className="min-h-[75vh] py-20 bg-slate-50">
-      <div className="max-w-5xl mx-auto px-6">
-        <header className="text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold">Give / Donate</h1>
-          <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
-            Thank you for supporting God Seeking Generation. Below are the
-            secure ways you can give — mobile money, bank transfer, or in-person.
-            Follow the instructions for each method and contact us if you need
-            any assistance.
-          </p>
-        </header>
+    <>
+      <PageCover
+        imageUrl="/images/coverphoto.jpg"
+        title="Give / Donate"
+        subtitle="Support God Seeking Generation through secure giving options."
+      />
+      <div className="min-h-[75vh] py-20 bg-slate-50">
+        <div className="max-w-5xl mx-auto px-6">
+
 
         <main className="mt-10 grid gap-6 md:grid-cols-3">
           {/* Mobile Money - MTN */}
@@ -115,5 +114,6 @@ export default function Donate() {
         </footer>
       </div>
     </div>
+    </>
   )
 }

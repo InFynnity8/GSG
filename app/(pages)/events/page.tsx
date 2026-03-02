@@ -8,8 +8,7 @@ import { EventItem } from "@/types/events"
 import { Calendar } from "@/components/ui/calendar"
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { X as XIcon } from "lucide-react"
-
-
+import { PageCover } from "@/components/ui/page-cover"
 
 function formatDateParts(iso: string) {
   const d = new Date(iso)
@@ -22,6 +21,8 @@ function formatDateParts(iso: string) {
 
 export default function EventsPage() {
   const [query, setQuery] = useState("")
+
+  // cover details can go inside render
   const [selectedTypes, setSelectedTypes] = useState<string[]>([])
   const [showUpcomingOnly, setShowUpcomingOnly] = useState(true)
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
@@ -103,15 +104,15 @@ export default function EventsPage() {
   }, [selectedDay, events])
 
   return (
+    <>
+      <PageCover
+        imageUrl="/images/coverphoto.jpg"
+        title="Events & Timeline"
+        subtitle="Explore upcoming and past ministry events, and filter to find what matters to you."
+      />
     <div className="min-h-[75vh] py-20 bg-slate-50">
       <div className="max-w-6xl mx-auto px-6">
-        <header className="text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold">Events & Timeline</h1>
-          <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
-            Explore upcoming and past ministry events. Use the filters or
-            search to find a specific event. Click an event to view more details.
-          </p>
-        </header>
+      
 
         <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
           <aside className="md:col-span-1">
@@ -242,6 +243,6 @@ export default function EventsPage() {
         </div>
       </div>
     </div>
-
+</>
   )
 }

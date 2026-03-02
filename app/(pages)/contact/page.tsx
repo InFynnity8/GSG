@@ -1,17 +1,17 @@
 import Link from "next/link"
+import { PageCover } from "@/components/ui/page-cover"
 
 export default function Contact() {
   return (
-    <div className="min-h-[75vh] py-20 bg-slate-50">
-      <div className="max-w-6xl mx-auto px-6">
-        <header className="text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold">Contact & Locations</h1>
-          <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
-            We’d love to hear from you. Find our main branch locations on the
-            map below and use the contact details to get in touch. For specific
-            branch information, select the branch from the map or message us.
-          </p>
-        </header>
+    <>
+      <PageCover
+        imageUrl="/images/coverphoto.jpg"
+        title="Contact & Locations"
+        subtitle="Get in touch or find one of our branches on the map."
+      />
+      <div className="min-h-[75vh] py-20 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-6">
+ 
 
         <div className="mt-10 grid md:grid-cols-2 gap-6">
           <section className="rounded-lg bg-white border p-4">
@@ -89,5 +89,6 @@ export default function Contact() {
         </div>
       </div>
     </div>
+    </>
   )
 }

@@ -1,17 +1,16 @@
+import { PageCover } from "@/components/ui/page-cover"
+
 export default function Page() {
   return (
-    <div className="min-h-[75vh] py-20 bg-slate-50">
-      <div className="max-w-5xl mx-auto px-6">
-        <header className="text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold">Our Story</h1>
-          <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
-            The story of God Seeking Generation began with a handful of people
-            who shared a desire to see authentic faith lived out in everyday
-            life. What started as a small home gathering quickly grew into a
-            movement of neighbourhood communities, student groups, and outreach
-            teams.
-          </p>
-        </header>
+    <>
+      <PageCover
+        imageUrl="/images/coverphoto.jpg"
+        title="Our Story"
+        subtitle="The journey of God Seeking Generation from a small gathering to a growing movement."
+      />
+      <div className="min-h-[75vh] py-20 bg-slate-50">
+        <div className="max-w-5xl mx-auto px-6">
+        
 
         <div className="p-6 mt-10 shadow-sm border rounded-lg bg-white">
           <section>
@@ -54,5 +53,6 @@ export default function Page() {
         </div>
       </div>
     </div>
+    </>
   )
 }

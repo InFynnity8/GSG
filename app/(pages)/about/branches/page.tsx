@@ -1,18 +1,16 @@
+import { PageCover } from "@/components/ui/page-cover"
+
 export default function Page() {
   return (
-    <div className="min-h-[75vh] py-20 bg-slate-50">
-      <div className="max-w-5xl mx-auto px-6">
-        <header className="text-center">
-          <h1 className="text-3xl md:text-4xl font-extrabold">
-            Branches & Gatherings
-          </h1>
-          <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
-            GSG operates through a network of local branches that gather weekly
-            for worship, teaching, and community life. Each branch adapts to the
-            needs of its neighbourhood while holding to shared rhythms of
-            prayer, discipleship, and service.
-          </p>
-        </header>
+    <>
+      <PageCover
+        imageUrl="/images/coverphoto.jpg"
+        title="Branches & Gatherings"
+        subtitle="Explore our local branches and how to connect with a community near you."
+      />
+      <div className="min-h-[75vh] py-20 bg-slate-50">
+        <div className="max-w-5xl mx-auto px-6">
+     
 
         <div className="p-6 mt-10   shadow-sm border rounded-lg bg-white">
           <section className="">
@@ -54,5 +52,6 @@ export default function Page() {
         </div>
       </div>
     </div>
+    </>
   );
 }

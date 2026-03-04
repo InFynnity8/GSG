@@ -103,7 +103,7 @@ export default function Navbar() {
               />
 
               <div className="border-l border-primary pl-3 md:pl-5 sm:block text-primary font-semibold leading-tight text-xs md:text-sm">
-                A GOD SEEKING <br />
+                GOD SEEKING <br />
                 GENERATION
               </div>
             </Link>

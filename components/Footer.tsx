@@ -141,13 +141,13 @@ const Footer = () => {
           <Image src="/GSG.png" alt="Logo" width={50} height={50} />
 
           <div className=" sm:block text-white font-semibold leading-tight text-sm">
-            A GOD SEEKING <br></br> GENERATION
+            GOD SEEKING <br></br> GENERATION
           </div>
         </Link>
         <div className="">
           <p>Terms & Conditions | Privacy Policy | Refund Policy</p>
           <p className="text-sm text-white">
-            &copy; {currentYear} A God Seeking Generation. All rights reserved.
+            &copy; {currentYear} God Seeking Generation. All rights reserved.
           </p>
         </div>
       </div>

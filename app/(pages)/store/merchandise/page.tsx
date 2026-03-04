@@ -168,7 +168,7 @@ export default function MerchandisePage() {
                   </div>
                   <div className="p-5 flex-1 flex flex-col">
                     <h3 className="text-base font-bold text-slate-900 line-clamp-2 leading-tight mb-2">{item.title}</h3>
-                    <p className="text-xs text-slate-500 mb-6 flex-grow line-clamp-2 leading-relaxed">{item.description}</p>
+                    <p className="text-xs text-slate-500 mb-6 grow line-clamp-2 leading-relaxed">{item.description}</p>
                     
                     <div className="mt-auto pt-4 border-t border-slate-50">
                       <div className="flex items-center justify-between mb-4">

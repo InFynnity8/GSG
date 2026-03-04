@@ -84,7 +84,7 @@ export default function DepartmentsPage() {
                   </div>
                   
                   <h3 className="text-xl font-bold text-slate-900 mb-4">{dept.title}</h3>
-                  <p className="text-base text-slate-600 mb-8 flex-grow leading-relaxed">
+                  <p className="text-base text-slate-600 mb-8 grow leading-relaxed">
                     {dept.description}
                   </p>
                   

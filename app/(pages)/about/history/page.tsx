@@ -67,7 +67,7 @@ function TimelineCard({ sec, i }: { sec: typeof sections[0], i: number }) {
       } ${i % 2 === 1 ? "sm:flex-row-reverse" : ""}`}
     >
       {/* Timeline Node Icon */}
-      <div className="absolute left-0 sm:left-1/2 -translate-x-1/2 flex items-center justify-center w-12 h-12 rounded-full bg-white border-4 border-slate-50 shadow-sm z-10 hidden sm:flex">
+      <div className="absolute left-0 sm:left-1/2 -translate-x-1/2 flex items-center justify-center w-12 h-12 rounded-full bg-white border-4 border-slate-50 shadow-sm z-10 sm:flex">
         <div className={`p-2 rounded-full text-white ${sec.color}`}>
           {sec.icon}
         </div>

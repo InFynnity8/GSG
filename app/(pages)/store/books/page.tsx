@@ -169,7 +169,7 @@ export default function BooksPage() {
                   </div>
                   <div className="p-4 flex-1 flex flex-col">
                     <h3 className="text-base font-bold text-slate-900 line-clamp-2 leading-snug">{book.title}</h3>
-                    <p className="text-xs text-slate-500 mt-1 mb-4 flex-grow line-clamp-3 leading-relaxed">{book.description}</p>
+                    <p className="text-xs text-slate-500 mt-1 mb-4 grow line-clamp-3 leading-relaxed">{book.description}</p>
                     
                     <div className="mt-auto space-y-3">
                       <div className="flex items-center justify-between">

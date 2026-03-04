@@ -34,7 +34,7 @@ export default function Donate() {
                   <h2 className="text-xl font-bold text-slate-900">MTN MoMo</h2>
                 </div>
                 
-                <div className="space-y-5 flex-grow">
+                <div className="space-y-5 grow">
                   <div className="p-4 bg-slate-50 rounded-md border border-slate-100">
                     <p className="text-xs uppercase tracking-wider font-bold text-slate-400 mb-1.5">Account Name</p>
                     <p className="text-base font-semibold text-slate-700">God Seeking Generation</p>
@@ -62,7 +62,7 @@ export default function Donate() {
                   <h2 className="text-xl font-bold text-slate-900">Vodafone Cash</h2>
                 </div>
 
-                <div className="space-y-5 flex-grow">
+                <div className="space-y-5 grow">
                   <div className="p-4 bg-slate-50 rounded-md border border-slate-100">
                     <p className="text-xs uppercase tracking-wider font-bold text-slate-400 mb-1.5">Account Name</p>
                     <p className="text-base font-semibold text-slate-700">God Seeking Generation</p>
@@ -90,7 +90,7 @@ export default function Donate() {
                   <h2 className="text-xl font-bold text-slate-900">Bank Transfer</h2>
                 </div>
 
-                <div className="space-y-4 flex-grow">
+                <div className="space-y-4 grow">
                    <div className="grid grid-cols-2 gap-4">
                       <div className="p-3 bg-slate-50 rounded-md border border-slate-100">
                         <p className="text-xs uppercase font-bold text-slate-400 mb-1">Bank</p>

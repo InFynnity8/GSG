@@ -105,7 +105,7 @@ export default function EventsPage() {
   return (
     <>
       <PageCover
-        imageUrl="/images/coverphoto.jpg"
+        imageUrl="https://images.unsplash.com/photo-1523580494863-6f3031224c94?q=80&w=1600&auto=format&fit=crop"
         title="Events & Timeline"
         subtitle="Explore upcoming and past ministry events, and filter to find what matters to you."
       />

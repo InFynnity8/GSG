@@ -20,7 +20,7 @@ const sampleMerch: Merch[] = [
     description: "Premium round-neck cotton tee with GSG print.",
     price: 25.0,
     category: "T-Shirt",
-    image: "https://images.unsplash.com/photo-1602810316149-4f075f9f8b66?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=1",
+    image: "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?q=80&w=800&auto=format&fit=crop",
   },
   {
     id: "m2",
@@ -28,7 +28,7 @@ const sampleMerch: Merch[] = [
     description: "Classic white round-neck tee, unisex fit.",
     price: 25.0,
     category: "T-Shirt",
-    image: "https://images.unsplash.com/photo-1585386959984-a4155222f9a4?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=2",
+    image: "https://images.unsplash.com/photo-1581655353564-df123a1eb820?q=80&w=800&auto=format&fit=crop",
   },
   {
     id: "m3",
@@ -36,7 +36,7 @@ const sampleMerch: Merch[] = [
     description: "Adjustable embroidered cap — one size fits all.",
     price: 15.0,
     category: "Cap",
-    image: "https://images.unsplash.com/photo-1600180758890-3c9a4b6d6b67?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=3",
+    image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?q=80&w=800&auto=format&fit=crop",
   },
 ]
 

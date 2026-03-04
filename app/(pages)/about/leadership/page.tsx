@@ -6,19 +6,19 @@ const leaders = [
     name: "Pastor James Atta",
     role: "Founder",
     bio: "James helped plant the first gatherings and focuses on preaching, pastoral care, and leadership development.",
-    img: "https://source.unsplash.com/200x200/?pastor,man",
+    img: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?q=80&w=400&auto=format&fit=crop",
   },
   {
     name: "Pastor Elvis",
     role: "Administrator",
     bio: "Elvis oversees outreach programmes, volunteer coordination, and local partnerships.",
-    img: "https://source.unsplash.com/200x200/?minister,man",
+    img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop",
   },
   {
-    name: "Pastor Akron",
+    name: "Pastor Ernest",
     role: "President",
-    bio: "Akron leads youth ministry, campus groups, and discipleship for the next generation.",
-    img: "https://source.unsplash.com/200x200/?young,pastor",
+    bio: "Ernest leads youth ministry, campus groups, and discipleship for the next generation.",
+    img: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=400&auto=format&fit=crop",
   },
 ]
 
@@ -26,7 +26,7 @@ export default function Page() {
   return (
     <>
       <PageCover
-        imageUrl="https://source.unsplash.com/1600x900/?leadership,team"
+        imageUrl="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=1600&auto=format&fit=crop"
         title="Leadership"
         subtitle="Meet the team guiding GSG with humility, service and vision."
       />

@@ -56,7 +56,9 @@ export default function Navbar() {
       <div className="w-full bg-primary text-primary-foreground py-2">
         <div className="max-w-7xl mx-auto flex gap-5 justify-between items-center px-4">
           <div className="flex items-center space-x-4 text-primary-foreground">
+            <Link href="http://www.youtube.com/@jamesattah" target="_blank" rel="noopener noreferrer">
             <FaYoutube className="hover:opacity-80 cursor-pointer" size={18} />
+            </Link>
             <FaFacebookF
               className="hover:opacity-80 cursor-pointer"
               size={18}

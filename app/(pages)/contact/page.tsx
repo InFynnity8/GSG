@@ -5,7 +5,7 @@ export default function Contact() {
   return (
     <>
       <PageCover
-        imageUrl="/images/coverphoto.jpg"
+        imageUrl="https://images.unsplash.com/photo-1534536281715-e28d76689b4d?q=80&w=1600&auto=format&fit=crop"
         title="Contact & Locations"
         subtitle="Get in touch or find one of our branches on the map."
       />

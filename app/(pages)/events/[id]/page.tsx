@@ -88,7 +88,7 @@ export default function EventDetailsPage({ params }: { params: Promise<{ id: str
 const handleSocialShare = (platform: string) => {
   if (!event) return
   const url = encodeURIComponent(window.location.href)
-  const shareText = `Check out this event: ${event.title}\n\n${window.location.href}${event.image ? `\n\nImage: ${event.image}` : ""}`
+  const shareText = `Check out this event: ${event.title}\n\n${window.location.href}`
   const encodedText = encodeURIComponent(shareText)
   let shareUrl = ""
 

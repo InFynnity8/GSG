@@ -50,39 +50,64 @@ export default function EventDetailsPage({ params }: { params: Promise<{ id: str
   const handleNativeShare = async () => {
     if (!event) return
     const url = window.location.href
+    const shareData: ShareData = {
+      title: event.title,
+      text: `Check out this event: ${event.title}`,
+      url: url,
+    }
+
     try {
-      await navigator.share({
-        title: event.title,
-        text: `Check out this event: ${event.title}`,
-        url: url,
-      })
+      // Logic to include image in native share
+      if (event.image && typeof navigator !== 'undefined' && navigator.canShare) {
+        try {
+          const response = await fetch(event.image)
+          const blob = await response.blob()
+          const file = new File([blob], 'event.jpg', { type: blob.type })
+          
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              ...shareData,
+              files: [file],
+            })
+            return
+          }
+        } catch (fileErr) {
+          console.error("File sharing not supported or failed:", fileErr)
+        }
+      }
+      
+      // Fallback to standard share if image sharing fails
+      if (navigator.share) {
+        await navigator.share(shareData)
+      }
     } catch (err) {
       console.error("Error sharing:", err)
     }
   }
+const handleSocialShare = (platform: string) => {
+  if (!event) return
+  const url = encodeURIComponent(window.location.href)
+  const shareText = `Check out this event: ${event.title}\n\n${window.location.href}${event.image ? `\n\nImage: ${event.image}` : ""}`
+  const encodedText = encodeURIComponent(shareText)
+  let shareUrl = ""
 
-  const handleSocialShare = (platform: string) => {
-    if (!event) return
-    const url = encodeURIComponent(window.location.href)
-    const text = encodeURIComponent(`Check out this event: ${event.title}`)
-    let shareUrl = ""
-
-    switch (platform) {
-      case "whatsapp":
-        shareUrl = `https://wa.me/?text=${text}%20${url}`
-        break
-      case "facebook":
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`
-        break
-      case "twitter":
-        shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`
-        break
-    }
-
-    if (shareUrl) {
-      window.open(shareUrl, "_blank", "noopener,noreferrer")
-    }
+  switch (platform) {
+    case "whatsapp":
+      shareUrl = `https://wa.me/?text=${encodedText}`
+      break
+    case "facebook":
+      // Facebook sharer primarily uses the URL to crawl OG tags
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`
+      break
+    case "twitter":
+      shareUrl = `https://twitter.com/intent/tweet?text=${encodedText}`
+      break
   }
+
+  if (shareUrl) {
+    window.open(shareUrl, "_blank", "noopener,noreferrer")
+  }
+}
 
   if (loading) {
     return (
@@ -157,7 +182,7 @@ export default function EventDetailsPage({ params }: { params: Promise<{ id: str
                       <FaTwitter className="mr-2 h-4 w-4 text-sky-500" />
                       <span>Twitter</span>
                     </DropdownMenuItem>
-                    {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
+                    {typeof navigator !== 'undefined' && typeof navigator.share !== 'undefined' && (
                       <DropdownMenuItem onClick={handleNativeShare} className="cursor-pointer hover:bg-primary">
                         <Share2 className="mr-2 h-4 w-4" />
                         <span>More Options...</span>

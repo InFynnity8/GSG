@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { supabase } from '@/utils/supabase'
 import { EventItem } from '@/types/events'
+import { formatEventTime } from '@/lib/utils'
 
 const UpcomingEvents = () => {
   const [events, setEvents] = useState<EventItem[]>([])
@@ -46,7 +47,7 @@ const UpcomingEvents = () => {
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="font-semibold">{e.title}</p>
-                      <p className="text-sm text-muted-foreground">{new Date(e.date).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                      <p className="text-sm text-muted-foreground">{new Date(e.date).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })} • {formatEventTime(e.time)}</p>
                     </div>
                     <div className="flex items-center gap-3">
                       <Button asChild variant="outline" size="sm" className="bg-white hover:bg-primary font-bold h-9 px-5"  >

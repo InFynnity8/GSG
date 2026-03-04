@@ -8,6 +8,7 @@ import { EventItem } from "@/types/events"
 import { Calendar } from "@/components/ui/calendar"
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { PageCover } from "@/components/ui/page-cover"
+import { formatEventTime } from "@/lib/utils"
 
 function formatDateParts(iso: string) {
   const d = new Date(iso)
@@ -186,10 +187,7 @@ export default function EventsPage() {
                                 <div>
                                   <p className="font-semibold">{e.title}</p>
                                   <p className="text-sm text-muted-foreground">
-                                    {new Date(e.date).toLocaleTimeString([], {
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                    })}
+                                    {formatEventTime(e.time)}
                                   </p>
                                 </div>
                                 <Button asChild variant="outline" size="sm" className="bg-white hover:bg-primary">
@@ -236,7 +234,7 @@ export default function EventsPage() {
                             <div className="ml-16 bg-white border rounded-md p-4 flex md:flex-row flex-col items-center justify-between gap-4 shadow-sm">
                               <div className="flex-1">
                                 <h3 className="text-lg font-semibold">{e.title}</h3>
-                                <div className="text-sm text-muted-foreground mt-1">{new Date(e.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                <div className="text-sm text-muted-foreground mt-1">{formatEventTime(e.time)}</div>
                                 <p className="mt-2 text-sm text-muted-foreground">{e.description}</p>
                               </div>
 

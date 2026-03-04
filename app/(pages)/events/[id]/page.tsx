@@ -8,6 +8,7 @@ import { EventItem } from "@/types/events"
 import { Button } from "@/components/ui/button"
 import { Calendar, Clock, MapPin, ArrowLeft, Share2, Copy, Link as LinkIcon } from "lucide-react"
 import { PageCover } from "@/components/ui/page-cover"
+import { formatEventTime } from "@/lib/utils"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -234,7 +235,7 @@ const handleSocialShare = (platform: string) => {
                       </div>
                       <div>
                         <p className="text-xs text-slate-400 font-bold uppercase tracking-tighter mb-0.5">Time</p>
-                        <p className="text-sm font-semibold text-slate-700">{formattedTime}</p>
+                        <p className="text-sm font-semibold text-slate-700">{formatEventTime(event.time)}</p>
                       </div>
                     </div>
 

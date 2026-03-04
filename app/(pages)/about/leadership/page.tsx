@@ -1,52 +1,57 @@
+import Image from "next/image"
 import { PageCover } from "@/components/ui/page-cover"
+
+const leaders = [
+  {
+    name: "Pastor James Atta",
+    role: "Founder",
+    bio: "James helped plant the first gatherings and focuses on preaching, pastoral care, and leadership development.",
+    img: "https://source.unsplash.com/200x200/?pastor,man",
+  },
+  {
+    name: "Pastor Elvis",
+    role: "Administrator",
+    bio: "Elvis oversees outreach programmes, volunteer coordination, and local partnerships.",
+    img: "https://source.unsplash.com/200x200/?minister,man",
+  },
+  {
+    name: "Pastor Akron",
+    role: "President",
+    bio: "Akron leads youth ministry, campus groups, and discipleship for the next generation.",
+    img: "https://source.unsplash.com/200x200/?young,pastor",
+  },
+]
 
 export default function Page() {
   return (
     <>
       <PageCover
-        imageUrl="/images/coverphoto.jpg"
+        imageUrl="https://source.unsplash.com/1600x900/?leadership,team"
         title="Leadership"
         subtitle="Meet the team guiding GSG with humility, service and vision."
       />
       <div className="min-h-[75vh] py-20 bg-slate-50">
-        <div className="max-w-5xl mx-auto px-6">
-        
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid gap-8 md:grid-cols-3">
+            {leaders.map((l) => (
+              <div key={l.name} className="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
+                <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden">
+                  <Image src={l.img} alt={l.name} width={96} height={96} className="object-cover" />
+                </div>
+                <h3 className="text-lg font-semibold">{l.name}</h3>
+                <p className="text-sm text-primary mb-2">{l.role}</p>
+                <p className="text-sm text-muted-foreground">{l.bio}</p>
+              </div>
+            ))}
+          </div>
 
-        <div className="p-6 mt-10 shadow-sm border rounded-lg bg-white">
-          <section className="mt-2 grid md:grid-cols-3 gap-6">
-            <div className="p-4 rounded-lg border bg-background">
-              <h3 className="font-semibold">Pastor James Atta (Founder)</h3>
-              <p className="text-sm text-muted-foreground mt-2">
-                James helped plant the first gatherings and focuses on
-                preaching, pastoral care, and leadership development.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-lg border bg-background">
-              <h3 className="font-semibold">Pastor Elvis (Administrator)</h3>
-              <p className="text-sm text-muted-foreground mt-2">
-                Elvis oversees outreach programmes, volunteer coordination, and
-                local partnerships.
-              </p>
-            </div>
-
-            <div className="p-4 rounded-lg border bg-background">
-              <h3 className="font-semibold">Pastor Akron (President)</h3>
-              <p className="text-sm text-muted-foreground mt-2">
-                Akron leads youth ministry, campus groups, and discipleship for
-                the next generation.
-              </p>
-            </div>
-          </section>
-
-          <p className="mt-6 text-muted-foreground">
+          <p className="mt-10 text-center text-muted-foreground">
             Our leadership team is supported by volunteers and advisory elders
             from partner communities. Transparency, pastoral care, and
             mentorship are key priorities for the team.
           </p>
         </div>
       </div>
-    </div>
     </>
   )
 }

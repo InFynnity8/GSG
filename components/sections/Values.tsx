@@ -1,12 +1,13 @@
 'use client'
 
 import React from 'react'
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from '@/components/ui/accordion'
+// accordion temporarily commented out for card layout
+// import {
+//   Accordion,
+//   AccordionItem,
+//   AccordionTrigger,
+//   AccordionContent,
+// } from '@/components/ui/accordion'
 
 const Values = () => {
   const values = [
@@ -60,19 +61,18 @@ const Values = () => {
           </p>
         </div>
 
-        <div className="max-w-3xl mx-auto">
-          <Accordion type="single" collapsible defaultValue="item-0" className="w-full">
-            {values.map((value, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="py-4 text-lg font-semibold hover:no-underline">
-                  {value.title}
-                </AccordionTrigger>
-                <AccordionContent className="text-base text-muted-foreground">
-                  {value.description}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          {values.map((value, index) => (
+            <div
+              key={index}
+              className="relative transform transition-transform hover:scale-105 hover:shadow-xl bg-white rounded-xl p-6 border border-gray-200 hover:border-primary cursor-pointer motion-safe:duration-300"
+            >
+              <h4 className="text-xl font-semibold mb-2">{value.title}</h4>
+              <p className="text-sm text-muted-foreground">{value.description}</p>
+              {/* simple animated background highlight */}
+              <span className="absolute inset-0 rounded-xl bg-linear-to-r from-primary/10 to-transparent opacity-0 hover:opacity-50 transition-opacity motion-safe:duration-300" />
+            </div>
+          ))}
         </div>
       </div>
     </section>

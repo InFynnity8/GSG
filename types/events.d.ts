@@ -3,6 +3,7 @@ export type EventItem = {
   title: string
   date: string
   type: string
+  time: string
   description: string
   image?: string | null
 }

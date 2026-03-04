@@ -1,13 +1,12 @@
 "use client"
 
-import React, { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { supabase } from '../../../utils/supabase'
 import { EventItem } from "@/types/events"
 import { Calendar } from "@/components/ui/calendar"
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { X as XIcon } from "lucide-react"
 import { PageCover } from "@/components/ui/page-cover"
 
 function formatDateParts(iso: string) {
@@ -110,139 +109,156 @@ export default function EventsPage() {
         title="Events & Timeline"
         subtitle="Explore upcoming and past ministry events, and filter to find what matters to you."
       />
-    <div className="min-h-[75vh] py-20 bg-slate-50">
-      <div className="max-w-6xl mx-auto px-6">
-      
+      <div className="min-h-[75vh] py-20 bg-slate-50">
+        <div className="max-w-6xl mx-auto px-6">
 
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
-          <aside className="md:col-span-1">
-            <div className="p-4 bg-white border rounded-md shadow-sm">
-              <label className="block text-sm font-medium">Search</label>
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search..."
-                className="mt-2 w-full rounded-md border px-3 py-2"
-              />
 
-        
-
-              <div className="mt-4 flex items-center justify-between">
-                <label className="text-sm">Upcoming only</label>
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+            <aside className="md:col-span-1">
+              <div className="p-4 bg-white border rounded-md shadow-sm">
+                <label className="block text-sm font-medium">Search</label>
                 <input
-                  type="checkbox"
-                  checked={showUpcomingOnly}
-                  onChange={(e) => setShowUpcomingOnly(e.target.checked)}
-                  className="h-4 w-4"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search..."
+                  className="mt-2 w-full rounded-md border px-3 py-2"
                 />
-              </div>
 
-              <div className="mt-4">
-                <label className="block text-sm">Sort</label>
-                <select
-                  value={sortOrder}
-                  onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
-                  className="mt-2 w-full rounded-md border px-2 py-2"
-                >
-                  <option value="asc">Soonest first</option>
-                  <option value="desc">Newest first</option>
-                </select>
-              </div>
 
-              <div className="mt-6">
-                <Dialog open={showCalendarDrawer} onOpenChange={setShowCalendarDrawer}>
-                  <DialogTrigger asChild>
-                    <Button className="w-full">View calendar</Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Event Calendar</DialogTitle>
-                    </DialogHeader>
-                    <Calendar
-                      mode="single"
-                      selected={selectedDay}
-                      onSelect={setSelectedDay}
-                      modifiers={{ hasEvent: eventDates }}
-                      modifiersClassNames={{ hasEvent: "bg-primary text-primary-foreground" }}
-                    />
-                    {selectedDay && eventsOnSelectedDay.length > 0 && (
-                      <div className="mt-4">
-                        <h3 className="font-semibold">
-                          Events on {selectedDay.toLocaleDateString()}
-                        </h3>
-                        <ul className="mt-2 space-y-2">
-                          {eventsOnSelectedDay.map((e) => (
-                            <li key={e.id} className="border rounded p-2 bg-white flex justify-between items-center">
-                              <div>
-                                <p className="font-semibold">{e.title}</p>
-                                <p className="text-sm text-muted-foreground">
-                                  {new Date(e.date).toLocaleTimeString([], {
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                  })}
-                                </p>
-                              </div>
-                              <Button asChild variant="outline" size="sm" className="bg-white hover:bg-primary">
-                                <Link href="/events">Details</Link>
-                              </Button>
-                            </li>
-                          ))}
-                        </ul>
+
+                <div className="mt-4 flex items-center justify-between">
+                  <label className="text-sm">Upcoming only</label>
+                  <input
+                    type="checkbox"
+                    checked={showUpcomingOnly}
+                    onChange={(e) => setShowUpcomingOnly(e.target.checked)}
+                    className="h-4 w-4"
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-sm">Sort</label>
+                  <select
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
+                    className="mt-2 w-full rounded-md border px-2 py-2"
+                  >
+                    <option value="asc">Soonest first</option>
+                    <option value="desc">Newest first</option>
+                  </select>
+                </div>
+
+                <div className="mt-6">
+                  <Dialog open={showCalendarDrawer} onOpenChange={setShowCalendarDrawer}>
+                    <DialogTrigger asChild>
+                      <Button className="w-full">View calendar</Button>
+                    </DialogTrigger>
+                    <DialogContent className="z-1000 shadow">
+                      <DialogHeader>
+                        <DialogTitle>Event Calendar</DialogTitle>
+                      </DialogHeader>
+                      <div className="grid md:grid-cols-2 grid-cols-1 items-center my-4 ">
+
+                        <Calendar
+                          mode="single"
+                          selected={selectedDay}
+                          onSelect={setSelectedDay}
+                          modifiers={{ hasEvent: eventDates }}
+                          modifiersClassNames={{ hasEvent: "bg-primary text-primary-foreground" }}
+                        />
+                        {eventsOnSelectedDay.map((e) => (
+                        <div className="w-full h-80 bg-slate-100 rounded-md flex items-center justify-center text-slate-400">
+                          {e.image ? (
+                            <img src={e.image} alt={e.title} className="w-full h-full object-cover rounded-md" />
+                          ) : (
+                            "No image"
+                          )}
+                        </div> ))}
                       </div>
-                    )}
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </div>
-          </aside>
-
-          <section className="md:col-span-3">
-            <div className="h-[70vh] overflow-auto md:p-4">
-              <div className="relative">
-                {/* vertical connector line */}
-                <div className="absolute left-8 top-6 bottom-6 w-px bg-slate-200" />
-
-                <div className="space-y-12 md:pr-6">
-                  {filtered.length === 0 ? (
-                    <div className="p-6 bg-white border rounded-md text-center text-muted-foreground">No events match your filters.</div>
-                  ) : (
-                    filtered.map((e, idx) => {
-                      const parts = formatDateParts(e.date)
-                      return (
-                        <article key={e.id} className="relative pl-20 pr-4 pb-2">
-                          {/* dot */}
-                          <div className="absolute left-8 top-3 -translate-x-1/2">
-                            <div className="w-3 h-3 bg-primary rounded-full border-2 border-white shadow" />
-                          </div>
-
-                          {/* date to the left of the dot - stacked column */}
-                          <div className="absolute -left-4 top-0 w-28 text-right flex flex-col items-end">
-                            <div className="text-sm text-muted-foreground uppercase">{parts.month}</div>
-                            <div className="text-2xl font-semibold">{parts.day}</div>
-                            <div className="text-sm text-muted-foreground">{parts.year}</div>
-                          </div>
-
-                          <div className="ml-16 bg-white border rounded-md p-4 flex md:flex-row flex-col items-center justify-between gap-4 shadow-sm">
-                            <div className="flex-1">
-                              <h3 className="text-lg font-semibold">{e.title}</h3>
-                              <div className="text-sm text-muted-foreground mt-1">{new Date(e.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                              <p className="mt-2 text-sm text-muted-foreground">{e.description}</p>
-                            </div>
-
-                            <div className="w-full md:w-36 min-h-24 bg-slate-100 rounded-md flex items-center justify-center text-slate-400">Image</div>
-                          </div>
-                        </article>
-                      )
-                    })
-                  )}
+                      {selectedDay && eventsOnSelectedDay.length > 0 && (
+                        <div className="mt-4">
+                          <h3 className="font-semibold">
+                            Events on {selectedDay.toLocaleDateString()}
+                          </h3>
+                          <ul className="mt-2 space-y-2">
+                            {eventsOnSelectedDay.map((e) => (
+                              <li key={e.id} className="border rounded p-2 bg-white flex justify-between items-center">
+                                <div>
+                                  <p className="font-semibold">{e.title}</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    {new Date(e.date).toLocaleTimeString([], {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })}
+                                  </p>
+                                </div>
+                                <Button asChild variant="outline" size="sm" className="bg-white hover:bg-primary">
+                                  <Link href="/events">Details</Link>
+                                </Button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </div>
-            </div>
-          </section>
+            </aside>
 
+            <section className="md:col-span-3">
+              <div className="h-[70vh] overflow-auto md:p-4">
+                <div className="relative">
+                  {/* vertical connector line */}
+                  <div className="absolute left-8 top-6 bottom-6 w-px bg-slate-200" />
+
+                  <div className="space-y-12 md:pr-6">
+                    {filtered.length === 0 ? (
+                      <div className="p-6 bg-white border rounded-md text-center text-muted-foreground">No events match your filters.</div>
+                    ) : (
+                      filtered.map((e, idx) => {
+                        const parts = formatDateParts(e.date)
+                        return (
+                          <article key={e.id} className="relative pl-20 pr-4 pb-2">
+                            {/* dot */}
+                            <div className="absolute left-8 top-3 -translate-x-1/2">
+                              <div className="w-3 h-3 bg-primary rounded-full border-2 border-white shadow" />
+                            </div>
+
+                            {/* date to the left of the dot - stacked column */}
+                            <div className="absolute -left-4 top-0 w-28 text-right flex flex-col items-end">
+                              <div className="text-sm text-muted-foreground uppercase">{parts.month}</div>
+                              <div className="text-2xl font-semibold">{parts.day}</div>
+                              <div className="text-sm text-muted-foreground">{parts.year}</div>
+                            </div>
+
+                            <div className="ml-16 bg-white border rounded-md p-4 flex md:flex-row flex-col items-center justify-between gap-4 shadow-sm">
+                              <div className="flex-1">
+                                <h3 className="text-lg font-semibold">{e.title}</h3>
+                                <div className="text-sm text-muted-foreground mt-1">{new Date(e.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                <p className="mt-2 text-sm text-muted-foreground">{e.description}</p>
+                              </div>
+
+                              <div className="w-full md:w-36 min-h-24 bg-slate-100 rounded-md flex items-center justify-center text-slate-400">
+                                {e.image ? (
+                                  <img src={e.image} alt={e.title} className="w-full h-full object-cover rounded-md" />
+                                ) : (
+                                  "No image"
+                                )}
+                              </div>
+                            </div>
+                          </article>
+                        )
+                      })
+                    )}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
         </div>
       </div>
-    </div>
-</>
+    </>
   )
 }

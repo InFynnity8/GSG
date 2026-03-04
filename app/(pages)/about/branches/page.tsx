@@ -1,33 +1,56 @@
 import { PageCover } from "@/components/ui/page-cover"
 import { ScrollReveal } from "@/components/ui/scroll-reveal"
-import { MapPin } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
 const branches = [
   {
     name: "Adullam",
-    schedule: "Thursdays",
+    location: "Kumasi",
     description: "Emphasis on neighbourhood outreach and building deep local roots in the community through prayer and service.",
     accent: "bg-emerald-500",
   },
   {
     name: "Zion",
-    schedule: "Thursdays",
+    location: "Kumasi",
     description: "Gatherings with worship, study, and mission projects tailored for the next generation of campus students.",
     accent: "bg-blue-500",
   },
   {
     name: "New Jerusalem",
-    schedule: "Thursdays",
+    location: "Kumasi",
     description: "Centred on neighbourhood outreach and creating a warm, welcoming environment for all backgrounds.",
     accent: "bg-[#8B4513]", // Brown
   },
   {
     name: "Bethel",
-    schedule: "Thursdays",
+    location: "Kumasi",
     description: "Includes food distribution, tutoring, and comprehensive family support programmes to meet practical needs.",
     accent: "bg-[#722F37]", // Wine
+  },
+  {
+    name: "KsTU",
+    location: "Kumasi",
+    description: "A vibrant campus-based community focusing on student leadership and academic-spiritual balance.",
+    accent: "bg-indigo-500",
+  },
+  {
+    name: "Adabraka",
+    location: "Accra",
+    description: "A central city gathering focusing on professional networking and urban mission impact.",
+    accent: "bg-orange-500",
+  },
+  {
+    name: "Nkawkaw",
+    location: "Nkawkaw",
+    description: "Building deep community roots through hospitality and local outreach in the heart of the mountains.",
+    accent: "bg-green-600",
+  },
+  {
+    name: "Triple G",
+    location: "Ho",
+    description: "God Seeking Generation at UHAS, nurturing a community of healthcare professionals with a heart for God.",
+    accent: "bg-violet-500",
   },
 ]
 
@@ -59,10 +82,10 @@ export default function BranchesPage() {
                 <div className="bg-white rounded-lg p-6 border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-md flex flex-col h-[300px]">
                   <div className="flex items-start justify-between mb-5">
                     <div className={`w-11 h-11 rounded-md ${branch.accent} bg-opacity-10 flex items-center justify-center`}>
-                      <MapPin className={`w-6 h-6 ${branch.accent.startsWith('bg-[') ? '' : branch.accent.replace('bg-', 'text-')}`} style={branch.accent.startsWith('bg-[') ? { color: branch.accent.match(/#\w+/)?.[0] } : {}} />
+                      <div className={`w-2 h-2 rounded-full ${branch.accent.startsWith('bg-[') ? '' : branch.accent}`} style={branch.accent.startsWith('bg-[') ? { backgroundColor: branch.accent.match(/#\w+/)?.[0] } : {}} />
                     </div>
                     <span className="text-xs font-bold uppercase tracking-widest text-slate-400 bg-slate-50 px-2.5 py-1 rounded">
-                      {branch.schedule}
+                      {branch.location}
                     </span>
                   </div>
                   

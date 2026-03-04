@@ -1,82 +1,55 @@
 "use client"
 
-import { CarFront, ShoppingCart } from "lucide-react"
+import { ShoppingCart } from "lucide-react"
 import React, { useEffect, useMemo, useState } from "react"
-
-type Book = {
-  id: string
-  title: string
-  description?: string
-  author: string
-  price: number
-  category?: string
-  image: string
-}
-
-const sampleBooks: Book[] = [
-  {
-    id: "b1",
-    title: "Founder's Journey",
-    description: "Memoir and lessons from our founder on building community.",
-    author: "Ps. James Atta",
-    price: 19.99,
-    category: "Memoir",
-    image: "https://images.unsplash.com/photo-1529655683826-aba9b3e77383?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=1",
-  },
-  {
-    id: "b2",
-    title: "Designing with Purpose",
-    description: "A practical guide to thoughtful product design.",
-    author: "Ps. James Atta",
-    price: 24.5,
-    category: "Design",
-    image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=2",
-  },
-  {
-    id: "b3",
-    title: "Community Building 101",
-    description: "Strategies and stories that grew our organization.",
-    author: "Ps. James Atta",
-    price: 14.0,
-    category: "Business",
-    image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=3",
-  },
-  {
-    id: "b4",
-    title: "Creative Rituals",
-    description: "Daily habits for productive creative work.",
-    author: "Ps. James Atta",
-    price: 12.0,
-    category: "Self-help",
-    image: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=800&auto=format&fit=crop&ixlib=rb-4.0.3&s=4",
-  }
-]
+import { supabase } from "@/utils/supabase"
+import { Book } from "@/types/books"
 
 export default function BooksPage() {
+  const [books, setBooks] = useState<Book[]>([])
   const [query, setQuery] = useState("")
   const [debouncedQuery, setDebouncedQuery] = useState("")
   const [category, setCategory] = useState<string | "">("")
   const [maxPrice, setMaxPrice] = useState<number | "">("")
   const [sort, setSort] = useState<"relevance" | "price-asc" | "price-desc">("relevance")
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [searching, setSearching] = useState(false)
+
+  // Fetch books from Supabase
+  useEffect(() => {
+    async function loadBooks() {
+      setLoading(true)
+      const { data, error } = await supabase
+        .from("books")
+        .select("*")
+      
+      if (error) {
+        console.error("Error fetching books:", error)
+      } else {
+        setBooks((data as Book[]) ?? [])
+      }
+      setLoading(false)
+    }
+    loadBooks()
+  }, [])
 
   // debounce input
   useEffect(() => {
-    setLoading(true)
+    setSearching(true)
     const t = setTimeout(() => {
       setDebouncedQuery(query)
-      setLoading(false)
+      setSearching(false)
     }, 300)
     return () => clearTimeout(t)
   }, [query])
 
   const categories = useMemo(() => {
-    return Array.from(new Set(sampleBooks.map((b) => b.category || "Other")))
-  }, [])
+    return Array.from(new Set(books.map((b) => b.category || "Other")))
+  }, [books])
 
   const filtered = useMemo(() => {
     const q = debouncedQuery.trim().toLowerCase()
-    let list = sampleBooks.filter((b) => b.author === "Ps. James Atta")
+    let list = [...books]
 
     if (category) {
       list = list.filter((b) => (b.category || "").toLowerCase() === category.toLowerCase())
@@ -101,33 +74,33 @@ export default function BooksPage() {
     if (sort === "price-desc") list = list.sort((a, b) => b.price - a.price)
 
     return list
-  }, [debouncedQuery, category, maxPrice, sort])
+  }, [debouncedQuery, category, maxPrice, sort, books])
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-8 pb-20">
       <header className="mb-6">
         <h1 className="text-3xl font-semibold">Library</h1>
-        <p className="text-sm text-muted-foreground mt-1">A curated collection created by our founder.</p>
+        <p className="text-sm text-muted-foreground mt-1">A curated collection created by our community and founder.</p>
       </header>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        <aside className="w-full h-fit sticky lg:w-64 bg-white border rounded-md p-4 shadow-sm">
-          <label className="block mb-2 text-sm font-medium">Search</label>
+        <aside className="w-full h-fit lg:w-64 bg-white border rounded-md p-4 shadow-sm lg:sticky lg:top-24">
+          <label className="block mb-2 text-sm font-medium text-slate-700">Search</label>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search title, description..."
-            className="w-full px-3 py-2 border rounded-md text-sm"
+            placeholder="Search title, author..."
+            className="w-full px-3 py-2 border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
 
           <div className="mt-4">
-            <label className="block text-sm font-medium mb-1">Category</label>
+            <label className="block text-sm font-medium mb-1 text-slate-700">Category</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-3 py-2 border rounded-md text-sm"
+              className="w-full px-3 py-2 border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
             >
-              <option value="">All</option>
+              <option value="">All Categories</option>
               {categories.map((c) => (
                 <option key={c} value={c}>
                   {c}
@@ -137,19 +110,23 @@ export default function BooksPage() {
           </div>
 
           <div className="mt-4">
-            <label className="block text-sm font-medium mb-1">Max Price</label>
+            <label className="block text-sm font-medium mb-1 text-slate-700">Max Price (GHS)</label>
             <input
               type="number"
               value={maxPrice as any}
               onChange={(e) => setMaxPrice(e.target.value === "" ? "" : Number(e.target.value))}
               placeholder="No limit"
-              className="w-full px-3 py-2 border rounded-md text-sm"
+              className="w-full px-3 py-2 border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
 
           <div className="mt-4">
-            <label className="block text-sm font-medium mb-1">Sort</label>
-            <select value={sort} onChange={(e) => setSort(e.target.value as any)} className="w-full px-3 py-2 border rounded-md text-sm">
+            <label className="block text-sm font-medium mb-1 text-slate-700">Sort By</label>
+            <select 
+              value={sort} 
+              onChange={(e) => setSort(e.target.value as any)} 
+              className="w-full px-3 py-2 border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+            >
               <option value="relevance">Relevance</option>
               <option value="price-asc">Price: Low → High</option>
               <option value="price-desc">Price: High → Low</option>
@@ -158,33 +135,63 @@ export default function BooksPage() {
         </aside>
 
         <main className="flex-1">
-          <div className="flex items-center justify-between mb-4">
-            <div className="text-sm text-gray-400">
-              {loading ? "Searching..." : `${filtered.length} result${filtered.length !== 1 ? "s" : ""}`}
+          <div className="flex items-center justify-between mb-6">
+            <div className="text-sm text-slate-500 font-medium">
+              {loading ? "Loading library..." : searching ? "Searching..." : `${filtered.length} book${filtered.length !== 1 ? "s" : ""} found`}
             </div>
-            <div className="text-sm text-gray-400">Showing books authored by  Ps James Atta</div>
           </div>
-<div className="h-[80vh] overflow-y-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-6 ">
-            {filtered.map((book) => (
-              <article key={book.id} className="border rounded-lg overflow-hidden shadow-sm bg-white flex flex-col max-h-[50vh]">
-                <div className="aspect-4/5 bg-gray-100 overflow-hidden">
-                  <img src={book.image} alt={book.title} className="w-full h-full object-cover hover:scale-105 transition-transform" />
-                </div>
-                <div className="p-3 flex-1 flex flex-col">
-                  <h3 className="text-sm font-semibold line-clamp-2">{book.title}</h3>
-                  <p className="text-xs text-gray-500 mt-1 flex-1">{book.description}</p>
-                  <div className="mt-3 flex items-center justify-between">
-                    <div>
-                      <div className="text-xs text-gray-600">by {book.author}</div>
-                      <div className="text-sm font-medium">GHC{book.price.toFixed(2)}</div>
+
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="h-80 bg-slate-100 rounded-lg animate-pulse" />
+              ))}
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="py-20 text-center bg-slate-50 rounded-lg border border-dashed border-slate-200">
+              <p className="text-slate-400 font-medium">No books found matching your criteria.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {filtered.map((book) => (
+                <article key={book.id} className="border border-slate-200 rounded-lg overflow-hidden shadow-sm bg-white flex flex-col group transition-all hover:shadow-md">
+                  <div className="aspect-square bg-slate-100 overflow-hidden relative">
+                    {book.image ? (
+                      <img src={book.image} alt={book.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-300">No Image</div>
+                    )}
+                    <div className="absolute top-2 right-2">
+                      <span className="px-2 py-1 bg-white/90 backdrop-blur-sm rounded text-[10px] font-bold uppercase tracking-wider text-slate-600 shadow-sm">
+                        {book.category || "Other"}
+                      </span>
                     </div>
-                    <button className="px-3 py-1 bg-primary text-white text-sm rounded-md hover:bg-primary"> <ShoppingCart/></button>
                   </div>
-                </div>
-              </article>
-            ))}
-          </div></div>
+                  <div className="p-4 flex-1 flex flex-col">
+                    <h3 className="text-base font-bold text-slate-900 line-clamp-2 leading-snug">{book.title}</h3>
+                    <p className="text-xs text-slate-500 mt-1 mb-4 flex-grow line-clamp-3 leading-relaxed">{book.description}</p>
+                    
+                    <div className="mt-auto space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex flex-col">
+                          <span className="text-[10px] uppercase font-bold text-slate-400">Author</span>
+                          <span className="text-xs font-semibold text-slate-700">{book.author}</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-[10px] uppercase font-bold text-slate-400 block">Price</span>
+                          <span className="text-sm font-bold text-primary">GHS {book.price.toFixed(2)}</span>
+                        </div>
+                      </div>
+                      <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white text-xs font-bold rounded-md hover:bg-primary/90 transition-colors">
+                        <ShoppingCart className="w-3.5 h-3.5" />
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </main>
       </div>
     </div>

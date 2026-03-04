@@ -5,5 +5,6 @@ export type EventItem = {
   type: string
   time: string
   description: string
+  venue: string
   image?: string | null
 }

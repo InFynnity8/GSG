@@ -245,7 +245,7 @@ const handleSocialShare = (platform: string) => {
                       </div>
                       <div>
                         <p className="text-xs text-slate-400 font-bold uppercase tracking-tighter mb-0.5">Location</p>
-                        <p className="text-sm font-semibold text-slate-700">Main Campus / Online</p>
+                        <p className="text-sm font-semibold text-slate-700">{event.venue}</p>
                       </div>
                     </div>
                   </div>

@@ -49,8 +49,8 @@ const UpcomingEvents = () => {
                       <p className="text-sm text-muted-foreground">{new Date(e.date).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Button asChild variant="outline" size="sm" className="bg-white hover:bg-primary"  >
-                        <Link href="/events">Details</Link>
+                      <Button asChild variant="outline" size="sm" className="bg-white hover:bg-primary font-bold h-9 px-5"  >
+                        <Link href={`/events/${e.id}`}>Details</Link>
                       </Button>
                     </div>
                   </div>

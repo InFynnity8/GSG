@@ -193,7 +193,7 @@ export default function EventsPage() {
                                   </p>
                                 </div>
                                 <Button asChild variant="outline" size="sm" className="bg-white hover:bg-primary">
-                                  <Link href="/events">Details</Link>
+                                  <Link href={`/events/${e.id}`}>Details</Link>
                                 </Button>
                               </li>
                             ))}
@@ -220,10 +220,11 @@ export default function EventsPage() {
                         const parts = formatDateParts(e.date)
                         return (
                           <article key={e.id} className="relative pl-20 pr-4 pb-2">
-                            {/* dot */}
-                            <div className="absolute left-8 top-3 -translate-x-1/2">
-                              <div className="w-3 h-3 bg-primary rounded-full border-2 border-white shadow" />
-                            </div>
+                              <Link href={`/events/${e.id}`}>
+                              {/* dot */}
+                              <div className="absolute left-8 top-3 -translate-x-1/2">
+                                <div className="w-3 h-3 bg-primary rounded-full border-2 border-white shadow" />
+                              </div>
 
                             {/* date to the left of the dot - stacked column */}
                             <div className="absolute -left-4 top-0 w-28 text-right flex flex-col items-end">
@@ -247,6 +248,7 @@ export default function EventsPage() {
                                 )}
                               </div>
                             </div>
+                          </Link>
                           </article>
                         )
                       })

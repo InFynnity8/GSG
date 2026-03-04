@@ -256,8 +256,8 @@ const handleSocialShare = (platform: string) => {
 
                 <div className="p-6 border border-slate-200 rounded-lg bg-white">
                   <h3 className="text-sm font-bold text-slate-900 mb-2">Have Questions?</h3>
-                  <p className="text-xs text-slate-500 mb-4">Reach out if you need more information about this event.</p>
-                  <Button asChild variant="outline" className="w-full text-xs hover:bg-primary transition-colors">
+                  <p className="text-sm text-slate-500 mb-4">Reach out if you need more information about this event.</p>
+                  <Button asChild variant="outline" className="w-full text-sm hover:bg-primary transition-colors">
                     <Link href="/contact">Contact Organizer</Link>
                   </Button>
                 </div>

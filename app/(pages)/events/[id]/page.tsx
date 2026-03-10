@@ -251,7 +251,59 @@ const handleSocialShare = (platform: string) => {
                   </div>
 
                   <div className="mt-8 pt-8 border-t border-slate-200">
-                    <Button className="w-full font-bold">Add to Calendar</Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button className="w-full font-bold">Add to Calendar</Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48 bg-white">
+                        <DropdownMenuItem onClick={() => {
+                          if (!event) return;
+                          const start = new Date(`${event.date}T${event.time || '00:00:00'}`);
+                          const end = new Date(start.getTime() + 2 * 60 * 60 * 1000); // 2 hours later
+                          const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+                          const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.title)}&details=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.venue)}&dates=${fmt(start)}/${fmt(end)}`;
+                          window.open(url, '_blank');
+                        }} className="cursor-pointer hover:bg-primary">
+                          <span>Google Calendar</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {
+                          if (!event) return;
+                          const start = new Date(`${event.date}T${event.time || '00:00:00'}`);
+                          const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+                          const url = `https://outlook.office.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&subject=${encodeURIComponent(event.title)}&body=${encodeURIComponent(event.description)}&location=${encodeURIComponent(event.venue)}&startdt=${start.toISOString()}&enddt=${end.toISOString()}`;
+                          window.open(url, '_blank');
+                        }} className="cursor-pointer hover:bg-primary">
+                          <span>Outlook Calendar</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => {
+                          if (!event) return;
+                          const start = new Date(`${event.date}T${event.time || '00:00:00'}`);
+                          const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+                          const fmt = (d: Date) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+                          const icsContent = [
+                            'BEGIN:VCALENDAR',
+                            'VERSION:2.0',
+                            'BEGIN:VEVENT',
+                            `SUMMARY:${event.title}`,
+                            `DESCRIPTION:${event.description.replace(/\n/g, '\\n')}`,
+                            `LOCATION:${event.venue}`,
+                            `DTSTART:${fmt(start)}`,
+                            `DTEND:${fmt(end)}`,
+                            'END:VEVENT',
+                            'END:VCALENDAR'
+                          ].join('\n');
+                          const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+                          const link = document.createElement('a');
+                          link.href = window.URL.createObjectURL(blob);
+                          link.setAttribute('download', `${event.title.replace(/\s+/g, '_')}.ics`);
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        }} className="cursor-pointer hover:bg-primary">
+                          <span>Apple / iCal</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
 

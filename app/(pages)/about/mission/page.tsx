@@ -31,7 +31,7 @@ export default function MissionPage() {
   return (
     <>
       <PageCover
-        imageUrl="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop"
+        imageUrl="/images/mission.jpg"
         title="Mission & Vision"
         subtitle="Our purpose: know God deeply and foster communities where lives are transformed."
       />

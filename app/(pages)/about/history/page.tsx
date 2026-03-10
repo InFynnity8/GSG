@@ -111,7 +111,7 @@ export default function Page() {
   return (
     <>
       <PageCover
-        imageUrl="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1600&auto=format&fit=crop"
+        imageUrl="/images/history.jpg"
         title="Our Story"
         subtitle="The journey of God Seeking Generation from a small gathering to a growing movement."
       />

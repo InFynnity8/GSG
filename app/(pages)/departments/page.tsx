@@ -60,7 +60,7 @@ export default function DepartmentsPage() {
   return (
     <>
       <PageCover
-        imageUrl="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1600&auto=format&fit=crop"
+        imageUrl="/images/departments.jpg"
         title="Ministry Departments"
         subtitle="Learn about the teams that serve our congregation and neighbourhood."
       />

@@ -58,7 +58,7 @@ export default function BranchesPage() {
   return (
     <>
       <PageCover
-        imageUrl="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?q=80&w=1600&auto=format&fit=crop"
+        imageUrl="/images/branches.avif"
         title="Branches & Gatherings"
         subtitle="Explore our local branches and how to connect with a community near you."
       />

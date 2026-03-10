@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "A God Seeking Generation",
-  description: "A God Seeking Generation is a youth ministry dedicated to inspiring and equipping young people to pursue a deep and meaningful relationship with God through worship, community, and service.",
+  title: "God Seeking Generation",
+  description: "God Seeking Generation is a youth ministry dedicated to inspiring and equipping young people to pursue a deep and meaningful relationship with God through worship, community, and service.",
 };
 
 export default function RootLayout({

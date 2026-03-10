@@ -54,7 +54,7 @@ const Footer = () => {
       <div className="min-h-[40vh] w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-zinc-800 gap-20 py-10 px-4 md:px-20">
         <ul className="gap-4 flex flex-col">
           <li className="mb-2 flex items-center gap-2">
-           <FaHome size={15} className="min-w-4"/>  A God Seeking Generation, Post Office Box
+           <FaHome size={15} className="min-w-4"/>  God Seeking Generation, Post Office Box
             AN 7933, Obomeng - Kwahu, Ghana.
           </li>
           <li className="mb-2 flex items-center gap-2">

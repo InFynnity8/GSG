@@ -242,7 +242,7 @@ export default function Navbar() {
                   className="hover:underline font-semibold text-primary"
                   onClick={() => setMobileOpen(false)}
                 >
-                  Devotionals ↗
+                  Devotionals
                 </Link>
               </div>
             </div>

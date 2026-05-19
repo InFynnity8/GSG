@@ -72,7 +72,7 @@ const Footer = () => {
             <Link href="/about/branches" className="text-sm text-zinc-300 hover:text-white">Find a Branch</Link>
             <Link href="/events" className="text-sm text-zinc-300 hover:text-white">Upcoming Events</Link>
             <Link href="https://devotional-amber.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline font-semibold">
-              GSG/NBC Devotionals ↗
+              GSG/NBC Devotionals
             </Link>
           </div>
           <div className="flex flex-col">

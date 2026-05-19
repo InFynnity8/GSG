@@ -41,7 +41,7 @@ export default function Donate() {
                   </div>
                   <div className="p-4 bg-slate-50 rounded-md border border-slate-100">
                     <p className="text-xs uppercase tracking-wider font-bold text-slate-400 mb-1.5">Number</p>
-                    <p className="text-base font-mono font-bold text-primary">+233 24 000 0000</p>
+                    <p className="text-base font-mono font-bold text-primary">+233 24 330 3897</p>
                   </div>
                 </div>
 
@@ -69,7 +69,7 @@ export default function Donate() {
                   </div>
                   <div className="p-4 bg-slate-50 rounded-md border border-slate-100">
                     <p className="text-xs uppercase tracking-wider font-bold text-slate-400 mb-1.5">Number</p>
-                    <p className="text-base font-mono font-bold text-primary">+233 20 000 0000</p>
+                    <p className="text-base font-mono font-bold text-primary">+233 54 969 9001</p>
                   </div>
                 </div>
 

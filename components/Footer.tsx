@@ -63,7 +63,10 @@ const Footer = () => {
           <li className="mb-2 flex items-center gap-2">
            <FaPaperPlane size={15} className="min-w-4"/> Administrator: +233 55 952 5262
           </li>
-          <li className="mb-2 flex items-center gap-2"> <FaEnvelope size={15} className="min-w-4"/> godseekinggeneration01@gmail.com</li>
+          <li className="mb-2 flex items-center gap-2"> <FaEnvelope size={15} className="min-w-4"/>
+            <a href="mailto:godseekinggeneration01@gmail.com" className="hover:underline break-all">
+              godseekinggeneration01@gmail.com
+            </a></li>
         </ul>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-3 mb-4">

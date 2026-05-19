@@ -6,33 +6,36 @@ import { useEffect, useRef, useState } from "react"
 
 const sections = [
   {
-    title: "Early Years",
+    title: "The Beginning (2010)",
     icon: <Clock className="w-6 h-6" />,
-    text: "In the early years, GSG focused on simple rhythms: prayer, study, hospitality, and service. These practices drew people from different backgrounds into deep friendships and gave rise to a pattern of multiplying small groups and local ministries.",
+    text: "God Seeking Generation was officially registered at the Registrar General's Department on October 5, 2010 (Registration No. G-33,926), headquartered at Obomeng-Kwahu in the Eastern Region of Ghana. The ministry was founded by Reverend James Attah, Head Pastor of New Birth Church, Obomeng-Kwahu, with a burning vision to see the glory of God restored and manifested in the Body of Christ.",
     color: "bg-blue-500",
   },
   {
-    title: "Growth & Impact",
+    title: "Building Bridges Across Denominations",
     icon: <TrendingUp className="w-6 h-6" />,
-    text: "Over time, the movement established formal branches, launched youth and community programmes, and partnered with local organisations to meet practical needs like food distribution, mentoring, and tutoring. Stories of transformation—restored relationships, lives redirected, and deeper spiritual growth—became common among those involved.",
+    text: "From its inception, GSG distinguished itself as a non-denominational ministry — a bold and deliberate decision. Reverend Attah gathered a diverse team of like-minded ministers from The Methodist Church Ghana, the Presbyterian Church of Ghana, The Church of Pentecost, and Living Word Restoration. This unity across denominational lines became a hallmark of the ministry's identity and a testament to its core belief in unity in the faith.",
     color: "bg-emerald-500",
   },
   {
-    title: "Milestones",
+    title: "Expanding Across Ghana",
     icon: <Target className="w-6 h-6" />,
-    text: "Several key milestones mark our journey, from the founding home group and first public gathering to the launch of outreach programmes and partnerships with local nonprofits and schools.",
+    text: "Starting from its Obomeng-Kwahu headquarters, the ministry grew steadily to establish branches in major cities and campuses across Ghana.",
     list: [
-      "Founding home group and first public gathering",
-      "Launch of first community outreach programme",
-      "Establishment of multiple city branches",
-      "Partnerships with local nonprofits and schools",
+      "Zion Branch – KNUST Campus, Kumasi",
+      "Bethel Branch – Gaza, Kumasi",
+      "Adullam Branch – Ayeduase, Kumasi",
+      "New Jerusalem Branch – Bomso, Kumasi",
+      "Asafo Fellowship – Kumasi",
+      "UHAS Fellowship – Ho, Volta Region",
+      "New Abirem Fellowship – Eastern Region",
     ],
     color: "bg-amber-500",
   },
   {
-    title: "Looking Ahead",
+    title: "Seeking God in This Generation",
     icon: <Rocket className="w-6 h-6" />,
-    text: "Today, GSG continues to learn and adapt—holding fast to practices that nurture discipleship while experimenting with new ways to reach the next generation.",
+    text: "Today, God Seeking Generation continues to pursue its founding mission — seeking the LORD's face, saving the lost, equipping the saints, and demonstrating the power of God through signs and wonders. Through outreach, conventions, camp meetings, prayer walks, and one-on-one evangelism, GSG is actively fulfilling the call to bring unity in the faith and in the knowledge of the Son of God.",
     color: "bg-primary",
   },
 ]
@@ -113,7 +116,7 @@ export default function Page() {
       <PageCover
         imageUrl="/images/history.jpg"
         title="Our Story"
-        subtitle="The journey of God Seeking Generation from a small gathering to a growing movement."
+        subtitle="The journey of God Seeking Generation — from Obomeng-Kwahu to a growing national ministry since 2010."
       />
 
       <div className="min-h-[75vh] py-20 bg-slate-50/50">

@@ -1,9 +1,9 @@
 "use client"
 
 import React, { useEffect, useMemo, useState } from "react"
-import { ShoppingCart } from "lucide-react"
 import { supabase } from "@/utils/supabase"
 import { Merch } from "@/types/merchant"
+import { PayButton } from "@/components/store/PayButton"
 
 export default function MerchandisePage() {
   const [merch, setMerch] = useState<Merch[]>([])
@@ -175,10 +175,7 @@ export default function MerchandisePage() {
                         <span className="text-[10px] uppercase font-bold text-slate-400">Price</span>
                         <span className="text-lg font-bold text-primary">GHS {item.price.toFixed(2)}</span>
                       </div>
-                      <button className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white text-xs font-bold rounded-md hover:bg-primary/90 transition-colors shadow-sm active:scale-[0.98]">
-                        <ShoppingCart className="w-4 h-4" />
-                        Add to Cart
-                      </button>
+                      <PayButton itemName={item.title} priceGHS={item.price} itemType="merchandise" />
                     </div>
                   </div>
                 </article>

@@ -235,6 +235,15 @@ export default function Navbar() {
                 >
                   Contact
                 </Link>
+                <Link
+                  href="https://devotional-amber.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline font-semibold text-primary"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  Devotionals ↗
+                </Link>
               </div>
             </div>
           </div>

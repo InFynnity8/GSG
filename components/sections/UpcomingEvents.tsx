@@ -30,43 +30,55 @@ const UpcomingEvents = () => {
   }, [])
 
   return (
-     <section className="w-full py-20 bg-slate-50">
-        <div className="max-w-6xl mx-auto px-6">
-          <h3 className="text-2xl font-bold">Upcoming Events</h3>
-          <p className="mt-2 text-muted-foreground">
-            Join us for community gatherings, worship nights, and service
-            opportunities. All are welcome — bring a friend.
-          </p>
+    <section className="w-full py-20 bg-slate-50">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-2">What's Coming</p>
+            <h3 className="text-3xl font-bold text-slate-900">Upcoming Events</h3>
+            <p className="mt-2 text-muted-foreground max-w-lg">
+              Join us for conventions, camp meetings, outreach, and prayer gatherings — all are welcome.
+            </p>
+          </div>
+          <Button asChild variant="outline" className="shrink-0 border-slate-300 hover:bg-primary hover:text-white hover:border-primary">
+            <Link href="/events">View all events</Link>
+          </Button>
+        </div>
 
-          <ul className="mt-6 space-y-4">
-            {events.length === 0 ? (
-              <li className="p-4 rounded-lg border bg-white text-center text-muted-foreground">No upcoming events</li>
-            ) : (
-              events.map((e) => (
-                <li key={e.id} className="p-4 rounded-lg border bg-white">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-semibold">{e.title}</p>
-                      <p className="text-sm text-muted-foreground">{new Date(e.date).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })} • {formatEventTime(e.time)}</p>
+        <ul className="space-y-3">
+          {events.length === 0 ? (
+            <li className="p-8 rounded-xl border bg-white text-center text-muted-foreground">
+              <p className="font-medium">No upcoming events at this time.</p>
+              <p className="text-sm mt-1">Check back soon or follow us on social media for updates.</p>
+            </li>
+          ) : (
+            events.map((e) => (
+              <li key={e.id} className="group rounded-xl border bg-white hover:border-primary hover:shadow-sm transition-all duration-200">
+                <div className="p-5 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-5">
+                    <div className="min-w-[52px] text-center bg-primary/5 rounded-lg py-2 px-3 border border-primary/10">
+                      <p className="text-xs font-bold uppercase text-primary/70">
+                        {new Date(e.date).toLocaleString(undefined, { month: 'short' })}
+                      </p>
+                      <p className="text-xl font-extrabold text-primary leading-none">
+                        {new Date(e.date).getDate()}
+                      </p>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <Button asChild variant="outline" size="sm" className="bg-white hover:bg-primary font-bold h-9 px-5"  >
-                        <Link href={`/events/${e.id}`}>Details</Link>
-                      </Button>
+                    <div>
+                      <p className="font-bold text-slate-900">{e.title}</p>
+                      <p className="text-sm text-muted-foreground mt-0.5">{formatEventTime(e.time)}{e.venue ? ` · ${e.venue}` : ''}</p>
                     </div>
                   </div>
-                </li>
-              ))
-            )}
-          </ul>
-
-          <div className="mt-6">
-            <Button asChild>
-              <Link href="/events">View all events</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+                  <Button asChild variant="outline" size="sm" className="shrink-0 bg-white hover:bg-primary hover:text-white hover:border-primary font-semibold">
+                    <Link href={`/events/${e.id}`}>Details</Link>
+                  </Button>
+                </div>
+              </li>
+            ))
+          )}
+        </ul>
+      </div>
+    </section>
   )
 }
 

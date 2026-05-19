@@ -13,46 +13,46 @@ import {
 
 const departments = [
   {
-    title: "Worship",
+    title: "Prayer Ministry",
     icon: <Music className="w-6 h-6 text-primary" />,
-    description: "Leading musical and liturgical elements for our gatherings. We train teams in music, audio, and stage production.",
-    meeting: "Sundays, 8:30am",
-    lead: "Pastor James"
+    description: "Prayer is the foundation of GSG. Through Prayer Buffets (all-day prayer marathons), Prayer Walks across neighbourhoods, and dedicated intercession groups, we stand in the gap for individuals, families, and communities.",
+    activity: "Prayer Buffet & Prayer Walk",
+    lead: "Rev. James Attah"
   },
   {
-    title: "Outreach & Community",
+    title: "Outreach & Evangelism",
     icon: <HandHeart className="w-6 h-6 text-emerald-500" />,
-    description: "Practical service — food distribution, mentoring, and local partnerships to meet neighbourhood needs.",
-    meeting: "Tuesdays, 6:00pm",
-    lead: "Leah"
+    description: "Reaching out with the Word of God, prayer, and support for material needs is at the heart of GSG's mission. Through field outreach, one-on-one witnessing, and community service, we spread hope and demonstrate Christ's love.",
+    activity: "Field Outreach & Witnessing",
+    lead: "Zonal Mobilisers"
   },
   {
-    title: "Youth & Students",
+    title: "Conventions & Gatherings",
     icon: <GraduationCap className="w-6 h-6 text-blue-500" />,
-    description: "Small-group discipleship, campus outreach, and weekend programmes for the next generation.",
-    meeting: "Fridays, 5:30pm",
-    lead: "Daniel"
+    description: "We cherish the fellowship of believers. Our conventions provide opportunities to gather in unity, strengthening faith and fostering spiritual growth. These gatherings are a source of inspiration, empowerment, and renewal.",
+    activity: "Weekly & National Conventions",
+    lead: "National Coordinator"
   },
   {
-    title: "Media & Communications",
+    title: "Tract & Media Ministry",
     icon: <Share2 className="w-6 h-6 text-amber-500" />,
-    description: "Social media, live-streaming, and promotional materials to manage online and in-person engagement.",
-    meeting: "Wednesdays, 7:00pm",
+    description: "One of our key evangelistic tools is the distribution of spiritually enriching tracts and uplifting messages. These materials reach hearts beyond the pulpit, offering spiritual guidance to those we may never meet in person.",
+    activity: "Tract Sharing & Uplifting Messages",
     lead: "Media Team"
   },
   {
-    title: "Discipleship & Small Groups",
+    title: "Camp Meetings",
     icon: <Users2 className="w-6 h-6 text-rose-500" />,
-    description: "Coordinating Bible studies and training for spiritual growth and leadership development.",
-    meeting: "Various times",
-    lead: "Discipleship Team"
+    description: "Our camp meetings are vibrant, spirit-filled events where we retreat from the busyness of life to focus on prayer, worship, and deep fellowship. These extended sessions provide a powerful space for spiritual growth and reflection.",
+    activity: "Extended Retreat Events",
+    lead: "Board of Patrons"
   },
   {
-    title: "Administration & Care",
+    title: "Administration & Finance",
     icon: <Settings className="w-6 h-6 text-slate-500" />,
-    description: "Operations, finances, pastoral care, and volunteer coordination to ensure ministries are resourced.",
-    meeting: "Mon–Fri, 9am–5pm",
-    lead: "Office"
+    description: "Operations, branch coordination, financial accountability, and pastoral care are managed by our administration. A semi-annual internal audit ensures transparent stewardship across all branches.",
+    activity: "Mon–Fri, Office Hours",
+    lead: "Elvis A. Asiedu (Administrator)"
   }
 ]
 
@@ -90,12 +90,12 @@ export default function DepartmentsPage() {
                   
                   <div className="mt-auto space-y-3.5 pt-5 border-t border-slate-100">
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-400">Meeting:</span>
-                      <span className="font-medium text-slate-700">{dept.meeting}</span>
+                      <span className="text-slate-400">Activity:</span>
+                      <span className="font-medium text-slate-700 text-right max-w-[60%]">{dept.activity}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-400">Lead:</span>
-                      <span className="font-medium text-slate-700">{dept.lead}</span>
+                      <span className="font-medium text-slate-700 text-right max-w-[60%]">{dept.lead}</span>
                     </div>
                   </div>
                 </div>

@@ -1,34 +1,37 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
-const slides: { src: string; title?: string; subtitle?: string; type: string }[] = [
-
+const slides: { src: string; title?: string; subtitle?: string; cta?: { primary: { label: string; href: string }; secondary: { label: string; href: string } }; type: string }[] = [
     {
         src: "/caro4.jpg",
-        title: "Welcome",
-        subtitle: "Join our vibrant and welcoming community, where faith, fellowship, and growth come together to create a meaningful spiritual journey for everyone.",
+        title: "Seeking God's Face",
+        subtitle: "A registered non-denominational Christian ministry headquartered at Obomeng-Kwahu, Ghana — united by one mission since 2010.",
+        cta: { primary: { label: "Our Story", href: "/about/history" }, secondary: { label: "Find a Branch", href: "/about/branches" } },
         type: "image"
     },
     {
         src: "/caro6.jpg",
-        title: "Worship",
-        subtitle: "Experience our inspiring worship services, filled with uplifting music, heartfelt prayers, and teachings that guide you closer to God in every aspect of life.",
+        title: "New Dimensions of Worship",
+        subtitle: "Encounter God's presence through spirit-filled worship, heartfelt prayer, and teachings that equip the saints for every good work.",
+        cta: { primary: { label: "Find a Branch", href: "/about/branches" }, secondary: { label: "Our Mission", href: "/about/mission" } },
         type: "image"
     },
     {
         src: "/caro8.jpg",
-        title: "Outreach",
-        subtitle: "Be part of our outreach initiatives that serve the community, offering support, love, and practical help to those in need, making a real impact around us.",
+        title: "Reaching the Lost",
+        subtitle: "Through outreach, tract sharing, camp meetings, and one-on-one evangelism, GSG is bringing the Gospel to communities across Ghana.",
+        cta: { primary: { label: "Our Activities", href: "/departments" }, secondary: { label: "Get Involved", href: "/contact" } },
         type: "image"
     },
     {
         src: "/videos/SOTW.mp4",
-        title: "Sermons",
-        subtitle: "Grow with us through our sermons, designed to enlighten, encourage, and challenge you, helping you apply faith and wisdom in your everyday life.",
+        title: "Word of the Season",
+        subtitle: "Grow in faith through the revelation of God's Word and the ministry of the Holy Spirit — equipping and perfecting the saints.",
+        cta: { primary: { label: "Upcoming Events", href: "/events" }, secondary: { label: "Give", href: "/give" } },
         type: "video"
     }
 ];
@@ -140,14 +143,22 @@ export default function HeroCarousel() {
                                             {s.subtitle}
                                         </p>
                                     )}
-                                    <div className="mt-6">
-                                        <Button className="cursor-pointer bg-white hover:text-white text-black hover:opacity-95">
-                                            Join Us
-                                        </Button>
-                                        <Button variant="outline" className="ml-3 text-white/90 bg-transparent hover:text-black hover:bg-white  cursor-pointer ">
-                                            Learn more
-                                        </Button>
-                                    </div>
+                                    {s.cta && (
+                                        <div className="mt-8 flex flex-wrap items-center gap-3">
+                                            <Link
+                                                href={s.cta.primary.href}
+                                                className="inline-flex items-center px-6 py-3 bg-primary text-white text-sm font-bold rounded-md hover:bg-primary/90 transition-colors shadow-lg"
+                                            >
+                                                {s.cta.primary.label}
+                                            </Link>
+                                            <Link
+                                                href={s.cta.secondary.href}
+                                                className="inline-flex items-center px-6 py-3 bg-white/15 border border-white/50 backdrop-blur-sm text-white text-sm font-semibold rounded-md hover:bg-white hover:text-black transition-colors"
+                                            >
+                                                {s.cta.secondary.label}
+                                            </Link>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

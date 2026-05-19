@@ -54,18 +54,27 @@ const Footer = () => {
       <div className="min-h-[40vh] w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-zinc-800 gap-20 py-10 px-4 md:px-20">
         <ul className="gap-4 flex flex-col">
           <li className="mb-2 flex items-center gap-2">
-           <FaHome size={15} className="min-w-4"/>  God Seeking Generation, Post Office Box
-            AN 7933, Obomeng - Kwahu, Ghana.
+           <FaHome size={15} className="min-w-4"/>  God Seeking Generation, P.O. Box AN 7933,
+            Obomeng-Kwahu, Eastern Region, Ghana.
           </li>
           <li className="mb-2 flex items-center gap-2">
-            <Phone size={15} className="min-w-4"/> +233 552 010 444 | +233 552 010 333
+            <Phone size={15} className="min-w-4"/> +233 24 330 3897 | +233 54 969 9001
           </li>
           <li className="mb-2 flex items-center gap-2">
-           <FaPaperPlane size={15} className="min-w-4"/> GSG - Obomeng, Kwahu, Ghana
+           <FaPaperPlane size={15} className="min-w-4"/> Administrator: +233 55 952 5262
           </li>
-          <li className="mb-2 flex items-center gap-2"> <FaEnvelope size={15} className="min-w-4"/> General Information: gsg@newbirth.com</li>
+          <li className="mb-2 flex items-center gap-2"> <FaEnvelope size={15} className="min-w-4"/> godseekinggeneration01@gmail.com</li>
         </ul>
         <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3 mb-4">
+            <p className="font-semibold text-lg">Quick Links</p>
+            <Link href="/about/history" className="text-sm text-zinc-300 hover:text-white">Our History</Link>
+            <Link href="/about/branches" className="text-sm text-zinc-300 hover:text-white">Find a Branch</Link>
+            <Link href="/events" className="text-sm text-zinc-300 hover:text-white">Upcoming Events</Link>
+            <Link href="https://devotional-amber.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline font-semibold">
+              GSG/NBC Devotionals ↗
+            </Link>
+          </div>
           <div className="flex flex-col">
             <p className="font-semibold text-lg">Follow Us</p>
             <div className="flex items-center py-2 space-x-4 text-primary">

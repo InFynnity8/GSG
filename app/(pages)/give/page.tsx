@@ -8,7 +8,7 @@ export default function Donate() {
   return (
     <>
       <PageCover
-        imageUrl="https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=1600&auto=format&fit=crop"
+        imageUrl="/images/coverphoto.jpg"
         title="Give / Donate"
         subtitle="Support God Seeking Generation through secure giving options."
       />
@@ -160,8 +160,8 @@ export default function Donate() {
                   <p className="text-sm text-primary-foreground/80 mb-8 leading-relaxed">
                     Our giving team is here to help with any queries regarding your donations.
                   </p>
-                  <a href="mailto:giving@gsg.org" className="text-base font-semibold flex items-center gap-2 hover:underline">
-                    giving@gsg.org
+                  <a href="mailto:godseekinggeneration01@gmail.com" className="text-base font-semibold flex items-center gap-2 hover:underline">
+                    godseekinggeneration01@gmail.com
                     <ExternalLink className="w-4 h-4" />
                   </a>
                </div>

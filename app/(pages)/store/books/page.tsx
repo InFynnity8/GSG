@@ -1,9 +1,9 @@
 "use client"
 
-import { ShoppingCart } from "lucide-react"
 import React, { useEffect, useMemo, useState } from "react"
 import { supabase } from "@/utils/supabase"
 import { Book } from "@/types/books"
+import { PayButton } from "@/components/store/PayButton"
 
 export default function BooksPage() {
   const [books, setBooks] = useState<Book[]>([])
@@ -182,10 +182,7 @@ export default function BooksPage() {
                           <span className="text-sm font-bold text-primary">GHS {book.price.toFixed(2)}</span>
                         </div>
                       </div>
-                      <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white text-xs font-bold rounded-md hover:bg-primary/90 transition-colors">
-                        <ShoppingCart className="w-3.5 h-3.5" />
-                        Add to Cart
-                      </button>
+                      <PayButton itemName={book.title} priceGHS={book.price} itemType="book" />
                     </div>
                   </div>
                 </article>

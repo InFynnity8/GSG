@@ -98,6 +98,14 @@ export default function NavMenu() {
           </NavigationMenuLink>
         </NavigationMenuItem>
 
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild className={navigationMenuTriggerStyle() + " text-primary font-semibold"}>
+            <a href="https://devotional-amber.vercel.app/" target="_blank" rel="noopener noreferrer">
+              Devotionals ↗
+            </a>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+
       </NavigationMenuList>
     </NavigationMenu>
   )

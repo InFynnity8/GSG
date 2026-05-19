@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { ShoppingCart, X, CheckCircle2 } from "lucide-react";
 
 declare global {
@@ -33,6 +34,15 @@ export function PayButton({ itemName, priceGHS, itemType }: Props) {
     document.body.appendChild(script);
     return () => { scriptRef.current?.remove(); };
   }, []);
+
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [showModal]);
 
   function handlePay(e: React.FormEvent) {
     e.preventDefault();
@@ -89,9 +99,12 @@ export function PayButton({ itemName, priceGHS, itemType }: Props) {
         Buy Now · GHS {priceGHS.toFixed(2)}
       </button>
 
-      {showModal && (
-        <div className="fixed inset-0 bg-black/50 z-[200] flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
+      {showModal && createPortal(
+        <div
+          className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4"
+          onClick={(e) => { if (e.target === e.currentTarget) { setShowModal(false); setError(""); } }}
+        >
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-auto p-6 relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => { setShowModal(false); setError(""); }}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 transition-colors"
@@ -148,7 +161,8 @@ export function PayButton({ itemName, priceGHS, itemType }: Props) {
               </p>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

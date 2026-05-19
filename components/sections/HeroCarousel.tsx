@@ -134,17 +134,17 @@ export default function HeroCarousel() {
 
 
                             <div className="absolute inset-0 max-w-6xl mx-auto px-6 md:px-12 flex items-end md:items-center">
-                                <div className="pb-12 md:pb-0 md:pt-0 text-white">
+                                <div className="pb-12 md:pb-0 md:pt-0 text-white w-full md:w-auto text-center md:text-left">
                                     <h2 className="text-3xl md:text-6xl font-extrabold drop-shadow-lg leading-tight">
                                         {s.title}
                                     </h2>
                                     {s.subtitle && (
-                                        <p className="mt-3 text-sm md:text-lg max-w-xl drop-shadow">
+                                        <p className="mt-3 text-sm md:text-lg max-w-xl drop-shadow mx-auto md:mx-0">
                                             {s.subtitle}
                                         </p>
                                     )}
                                     {s.cta && (
-                                        <div className="mt-8 flex flex-wrap items-center gap-3">
+                                        <div className="mt-8 flex flex-wrap justify-center md:justify-start items-center gap-3">
                                             <Link
                                                 href={s.cta.primary.href}
                                                 className="inline-flex items-center px-6 py-3 bg-primary text-white text-sm font-bold rounded-md hover:bg-primary/90 transition-colors shadow-lg"

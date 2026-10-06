@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { supabase } from '../../../utils/supabase'
+import { api, Paginated } from "@/lib/api"
 import { EventItem } from "@/types/events"
 import { Calendar } from "@/components/ui/calendar"
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -33,19 +33,14 @@ export default function EventsPage() {
 
   useEffect(() => {
     async function getEvents() {
-      let query = supabase.from("events").select("*")
-      if (showUpcomingOnly) {
-        const now = new Date().toISOString()
-        query = query.gt("date", now)
-      }
-
-      const { data, error } = await query
-
-      if (error) {
+      try {
+        const res = await api.get<Paginated<EventItem>>(
+          `/events?limit=100${showUpcomingOnly ? "&upcoming=true" : ""}`,
+        )
+        setEvents(res.data)
+      } catch (error) {
         console.error("error fetching events", error)
-        return
       }
-      setEvents((data as EventItem[]) ?? [])
     }
 
     getEvents()
@@ -66,7 +61,9 @@ export default function EventsPage() {
       .filter((e) => {
         // server already filters future events when the checkbox is active,
         // but we'll keep this as a fallback.
-        if (showUpcomingOnly && new Date(e.date).getTime() < now) return false
+        // keep events running today / multi-day events still in progress
+        const lastDay = new Date(`${e.endDate ?? e.date}T23:59:59`).getTime()
+        if (showUpcomingOnly && lastDay < now) return false
         if (selectedTypes.length > 0 && !selectedTypes.includes(e.type))
           return false
         if (!q) return true

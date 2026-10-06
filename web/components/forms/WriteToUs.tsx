@@ -21,6 +21,7 @@ import {
   FieldGroup,
 } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
+import { api } from "@/lib/api";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
@@ -41,21 +42,18 @@ export default function WriteToUs() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
-    });
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    try {
+      await api.post("/contact", data);
+      toast.success("Thank you! Your message has been sent — we'll get back to you soon.", {
+        position: "bottom-right",
+      });
+      form.reset();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not send your message. Please try again.", {
+        position: "bottom-right",
+      });
+    }
   }
 
   return (
@@ -64,7 +62,7 @@ export default function WriteToUs() {
         <CardTitle>Write to us:</CardTitle>
       </CardHeader>
       <CardContent className="p-0">
-        <form id="form-rhf-write" onSubmit={form.handleSubmit(onSubmit)}>
+        <form id="form-write-to-us" onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup className="gap-4">
             <Controller
               name="name"
@@ -126,8 +124,8 @@ export default function WriteToUs() {
       </CardContent>
       <CardFooter className="p-0">
         <Field orientation="horizontal">
-          <Button type="submit" className="cursor-pointer rounded-none w-full" form="form-rhf-write">
-            Submit
+          <Button type="submit" disabled={form.formState.isSubmitting} className="cursor-pointer rounded-none w-full" form="form-write-to-us">
+            {form.formState.isSubmitting ? "Sending..." : "Submit"}
           </Button>
         </Field>
       </CardFooter>

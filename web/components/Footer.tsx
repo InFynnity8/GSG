@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { api } from "@/lib/api";
 import { Input } from "@/components/ui/input";
 import {
   Field,
@@ -32,21 +33,18 @@ const Footer = () => {
     },
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
-    });
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    try {
+      await api.post("/newsletter/subscribe", data);
+      toast.success("Thank you for subscribing! Check your inbox for a welcome email.", {
+        position: "bottom-right",
+      });
+      form.reset();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not subscribe. Please try again.", {
+        position: "bottom-right",
+      });
+    }
   }
 
   return (
@@ -106,7 +104,7 @@ const Footer = () => {
             <div className="flex items-center space-x-4 text-primary">
               <form
                 className=" w-full"
-                id="form-rhf-write"
+                id="form-newsletter"
                 onSubmit={form.handleSubmit(onSubmit)}
               >
                 <FieldGroup className="gap-4">
@@ -115,12 +113,12 @@ const Footer = () => {
                     control={form.control}
                     render={({ field, fieldState }) => (
                       <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="form-rhf-input-email">
+                        <FieldLabel htmlFor="form-newsletter-email">
                           Email
                         </FieldLabel>
                         <Input
                           {...field}
-                          id="form-rhf-input-email"
+                          id="form-newsletter-email"
                           aria-invalid={fieldState.invalid}
                           placeholder="Email"
                           className="text-zinc-900 rounded-none bg-white placeholder:text-zinc-400 w-full"
@@ -135,7 +133,7 @@ const Footer = () => {
                 <Button
                   type="submit"
                   className="cursor-pointer rounded-none mt-4 w-full"
-                  form="form-rhf-write"
+                  form="form-newsletter"
                 >
                   Subscribe
                 </Button>

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { supabase } from '@/utils/supabase'
+import { api, Paginated } from '@/lib/api'
 import { EventItem } from '@/types/events'
 import { formatEventTime } from '@/lib/utils'
 
@@ -12,19 +12,12 @@ const UpcomingEvents = () => {
 
   useEffect(() => {
     async function load() {
-      const now = new Date().toISOString()
-      const { data, error } = await supabase
-        .from('events')
-        .select('*')
-        .gt('date', now)
-        .order('date', { ascending: true })
-        .limit(3)
-
-      if (error) {
+      try {
+        const res = await api.get<Paginated<EventItem>>('/events?upcoming=true&order=asc&limit=3')
+        setEvents(res.data)
+      } catch (error) {
         console.error('failed to load events', error)
-        return
       }
-      setEvents(data ?? [])
     }
     load()
   }, [])

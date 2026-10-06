@@ -2,33 +2,52 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ShoppingCart, X, CheckCircle2 } from "lucide-react";
+import { ShoppingCart, X, CheckCircle2, Loader2 } from "lucide-react";
+import { api } from "@/lib/api";
+
+// Paystack InlineJS v2 — the transaction is initialised on our server (which
+// sets the price), the popup only resumes it with the returned access code.
+interface PaystackPopup {
+  resumeTransaction: (
+    accessCode: string,
+    callbacks: {
+      onSuccess?: (transaction: { reference: string }) => void;
+      onCancel?: () => void;
+      onError?: (error: { message?: string }) => void;
+    },
+  ) => void;
+}
 
 declare global {
   interface Window {
-    PaystackPop: {
-      setup: (config: Record<string, unknown>) => { openIframe: () => void };
-    };
+    PaystackPop: new () => PaystackPopup;
   }
 }
 
 interface Props {
+  itemId: string;
   itemName: string;
   priceGHS: number;
   itemType: "book" | "merchandise";
 }
 
-export function PayButton({ itemName, priceGHS, itemType }: Props) {
+interface CheckoutResponse {
+  reference: string;
+  accessCode: string;
+}
+
+export function PayButton({ itemId, itemName, priceGHS, itemType }: Props) {
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ email: "", name: "" });
   const [paid, setPaid] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const scriptRef = useRef<HTMLScriptElement | null>(null);
 
   useEffect(() => {
     if (document.querySelector('script[src*="paystack"]')) return;
     const script = document.createElement("script");
-    script.src = "https://js.paystack.co/v1/inline.js";
+    script.src = "https://js.paystack.co/v2/inline.js";
     script.async = true;
     scriptRef.current = script;
     document.body.appendChild(script);
@@ -44,40 +63,64 @@ export function PayButton({ itemName, priceGHS, itemType }: Props) {
     return () => { document.body.style.overflow = ""; };
   }, [showModal]);
 
-  function handlePay(e: React.FormEvent) {
+  async function handlePay(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-
-    const publicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY ?? "";
-    if (!publicKey || publicKey.includes("your_paystack")) {
-      setError("Payment gateway is not yet configured. Please contact us at godseekinggeneration01@gmail.com to purchase.");
-      return;
-    }
 
     if (!window.PaystackPop) {
       setError("Payment service failed to load. Please refresh and try again.");
       return;
     }
 
-    const handler = window.PaystackPop.setup({
-      key: publicKey,
-      email: form.email,
-      amount: Math.round(priceGHS * 100),
-      currency: "GHS",
-      ref: `gsg_${itemType}_${Date.now()}`,
-      metadata: {
-        custom_fields: [
-          { display_name: "Item", variable_name: "item", value: itemName },
-          { display_name: "Buyer", variable_name: "buyer", value: form.name },
-        ],
+    setBusy(true);
+    let checkout: CheckoutResponse;
+    try {
+      checkout = await api.post<CheckoutResponse>("/orders/checkout", {
+        itemType: itemType === "book" ? "BOOK" : "MERCHANDISE",
+        itemId,
+        buyerName: form.name,
+        buyerEmail: form.email,
+      });
+    } catch (err) {
+      setBusy(false);
+      setError(
+        err instanceof Error && err.message.includes("not configured")
+          ? "Online payment is not available yet. Please contact us at godseekinggeneration01@gmail.com to purchase."
+          : err instanceof Error
+            ? err.message
+            : "Could not start payment. Please try again.",
+      );
+      return;
+    }
+
+    setShowModal(false);
+    new window.PaystackPop().resumeTransaction(checkout.accessCode, {
+      onSuccess: async () => {
+        // Confirm with our server (which checks with Paystack) before
+        // showing success — the popup alone is not proof of payment.
+        try {
+          const order = await api.get<{ status: string }>(
+            `/orders/verify/${encodeURIComponent(checkout.reference)}`,
+          );
+          if (order.status === "PAID") setPaid(true);
+          else {
+            setError("We couldn't confirm your payment yet. If you were charged, please contact us with your reference: " + checkout.reference);
+            setShowModal(true);
+          }
+        } catch {
+          setError("We couldn't confirm your payment yet. If you were charged, please contact us with your reference: " + checkout.reference);
+          setShowModal(true);
+        } finally {
+          setBusy(false);
+        }
       },
-      callback: () => {
-        setShowModal(false);
-        setPaid(true);
+      onCancel: () => setBusy(false),
+      onError: (err) => {
+        setBusy(false);
+        setError(err?.message || "Payment failed. Please try again.");
+        setShowModal(true);
       },
-      onClose: () => {},
     });
-    handler.openIframe();
   }
 
   if (paid) {
@@ -152,12 +195,14 @@ export function PayButton({ itemName, priceGHS, itemType }: Props) {
 
               <button
                 type="submit"
-                className="w-full py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors text-sm"
+                disabled={busy}
+                className="w-full py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors text-sm disabled:opacity-60 flex items-center justify-center gap-2"
               >
+                {busy && <Loader2 className="w-4 h-4 animate-spin" />}
                 Pay via Paystack
               </button>
               <p className="text-[10px] text-slate-400 text-center">
-                Secured by Paystack · MTN MoMo · Vodafone Cash · Card
+                Secured by Paystack · MTN MoMo · Telecel Cash · Card
               </p>
             </form>
           </div>

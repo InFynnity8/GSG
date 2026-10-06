@@ -1,98 +1,144 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# GSG Website API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS 11 + Prisma 7 backend for the God Seeking Generation website. It runs on:
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+- **Neon Postgres** for the data
+- **Neon Object Storage** for files
+- **Resend** for email
+- **Paystack** for store payments
 
-## Description
+- Production: https://gsg-xs4r.onrender.com
+- API base: `/api/v1`
+- Interactive docs: `/docs`
+- Health checks: `/health` and `/health/ready`
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+## Local development
 
 ```bash
-$ npm install
+npm install            # also runs `prisma generate`
+cp .env.example .env   # then fill in the values
+npm run db:deploy      # apply migrations
+npm run db:seed        # website content, KNUST events, first super admin
+npm run start:dev      # http://localhost:3000/docs
 ```
 
-## Compile and run the project
+| Script | What it does |
+|---|---|
+| `npm run db:migrate -- --name <change>` | Create and apply a new migration after you edit `prisma/schema.prisma` |
+| `npm run db:deploy` | Apply pending migrations. Safe for production |
+| `npm run db:seed` | Idempotent seed. It never overwrites content edited in the admin panel |
+| `npm run db:studio` | Open a database browser |
+| `npm run storage:cors` | Apply the bucket CORS policy for browser uploads |
+| `npm test` / `npm run test:e2e` | Unit tests / API tests against the database |
 
-```bash
-# development
-$ npm run start
+## Deploying on Render
 
-# watch mode
-$ npm run start:dev
+Use these service settings:
 
-# production mode
-$ npm run start:prod
-```
+- **Build command:** `npm ci && npm run build && npx prisma migrate deploy`
+- **Start command:** `npm run start:prod`
+- **Health check path:** `/health`
+- **Environment:** every variable in `.env.example`, with these production values:
+  - `NODE_ENV=production`
+  - `APP_URL=https://gsg-xs4r.onrender.com`
+  - `CORS_ORIGINS=<website URL>,<admin URL>`
+  - A new, long `JWT_SECRET`
+  - `SWAGGER_ENABLED=false` if you don't want the docs public
 
-## Run tests
+## One-time setup
 
-```bash
-# unit tests
-$ npm run test
+### 1. Neon Object Storage
 
-# e2e tests
-$ npm run test:e2e
+1. In the Neon Console, open the project, go to **Storage**, and create a bucket named `gsg-media` with access level **public_read**.
+2. Copy the branch's S3 endpoint and credentials into these variables (or run `neon env pull`):
+   - `AWS_ENDPOINT_URL_S3`
+   - `AWS_ACCESS_KEY_ID`
+   - `AWS_SECRET_ACCESS_KEY`
+   - `AWS_REGION`
+3. Run `npm run storage:cors`. Run it again whenever `CORS_ORIGINS` changes.
 
-# test coverage
-$ npm run test:cov
-```
+### 2. Resend
 
-## Deployment
+1. Verify your domain at resend.com/domains.
+2. Create an API key and set `RESEND_API_KEY`.
+3. Set `MAIL_FROM` to an address on the verified domain.
+4. Set `MAIL_NOTIFY_TO` to the inbox that should receive website messages.
+5. For newsletters, create a Segment in Resend and set `RESEND_NEWSLETTER_SEGMENT_ID`. Then call `POST /api/v1/admin/newsletter/sync` once to copy existing subscribers into it.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### 3. Paystack
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+1. Set `PAYSTACK_SECRET_KEY` and `PAYSTACK_PUBLIC_KEY`.
+2. In the Paystack dashboard, set the webhook URL to `https://gsg-xs4r.onrender.com/api/v1/payments/paystack/webhook`.
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+## What sends email
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+| Trigger | Emails |
+|---|---|
+| Contact form (`POST /contact`) | Notification to `MAIL_NOTIFY_TO` (reply goes straight to the sender) and an auto-reply to the sender |
+| Newsletter subscribe | Welcome email with an unsubscribe link, and the contact is synced to Resend |
+| Newsletter unsubscribe | Contact marked unsubscribed in Resend |
+| Prayer request | Notification to the church, plus an acknowledgement if the sender gave an email and isn't anonymous |
+| Testimony | "Awaiting approval" notification to the church |
+| Paid order | Receipt to the buyer and a notification to the church |
+| `POST /admin/newsletter/broadcasts` | Newsletter to the whole Resend segment |
 
-## Resources
+All emails use the website logo and colours (`src/mail/templates.ts`). If Resend is down, or no key is set, form submissions still succeed. The email is skipped and the problem is logged.
 
-Check out a few resources that may come in handy when working with NestJS:
+## API overview
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Public (no auth)
 
-## Support
+- Content:
+  - `GET /site` returns settings, social links and stats
+  - `GET /hero-slides`
+  - `GET /page-sections?type=HISTORY|MISSION|CORE_VALUE`
+  - `GET /branches`, `GET /branches/:slug`
+  - `GET /leaders?group=LEADERSHIP|PATRON|DIRECTORY`
+  - `GET /departments`
+  - `GET /giving-methods`
+  - `GET /service-times`
+- Events:
+  - `GET /events?upcoming=true&type=&search=&page=&limit=`
+  - `GET /events/types`
+  - `GET /events/:idOrSlug`
+- Store:
+  - `GET /store/books`, `GET /store/merchandise`. Both accept `?category=&search=&maxPrice=&sort=price-asc|price-desc|newest|title`
+  - `GET /store/books/:idOrSlug`, `GET /store/merchandise/:idOrSlug`
+- Payments:
+  - `POST /orders/checkout` returns a Paystack `accessCode`
+  - `GET /orders/verify/:reference`
+- Forms:
+  - `POST /contact`
+  - `POST /newsletter/subscribe`, `POST /newsletter/unsubscribe`
+  - `POST /prayer-requests`
+  - `POST`/`GET /testimonies`
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Admin (Bearer token from `POST /auth/login`)
 
-## Stay in touch
+Everything under `/admin/*`. What each role can do:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- **EDITOR:** content, events, store and media
+- **ADMIN:** everything an editor can do, plus orders, form submissions, settings and newsletter broadcasts
+- **SUPER_ADMIN:** everything, plus managing admin users (`/admin/users`)
 
-## License
+## Security notes
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- Every route requires a token unless it is marked `@Public()`.
+- Tokens are revoked when a user's password, role or active status changes.
+- Request bodies are validated with a whitelist, so unknown fields are rejected. URLs must be `http(s)` or site-relative.
+- Rate limits:
+  - 120 requests per minute per IP overall
+  - 5 per minute on login
+  - 5 per 10 minutes on each public form
+  - Forms also have a honeypot field (`website`)
+- Helmet sets security headers, and CORS only allows origins listed in `CORS_ORIGINS`.
+- Paystack payments:
+  - The server sets the price, not the browser.
+  - Webhook signatures are verified as HMAC-SHA512 of the raw request body.
+  - The amount and currency are re-checked against Paystack before an order is marked paid.
+  - Concurrent webhooks and verify calls can't double-process an order.
+- Uploads:
+  - Only allow-listed file types are accepted, and their actual bytes are checked against the claimed type.
+  - SVG is not accepted.
+  - The server generates the storage keys.
+  - Size limits apply.

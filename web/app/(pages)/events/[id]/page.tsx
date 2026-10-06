@@ -3,7 +3,7 @@
 import { useEffect, useState, use } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { supabase } from "@/utils/supabase"
+import { api } from "@/lib/api"
 import { EventItem } from "@/types/events"
 import { Button } from "@/components/ui/button"
 import { Calendar, Clock, MapPin, ArrowLeft, Share2, Copy, Link as LinkIcon } from "lucide-react"
@@ -25,16 +25,10 @@ export default function EventDetailsPage({ params }: { params: Promise<{ id: str
 
   useEffect(() => {
     async function getEvent() {
-      const { data, error } = await supabase
-        .from("events")
-        .select("*")
-        .eq("id", id)
-        .single()
-
-      if (error) {
+      try {
+        setEvent(await api.get<EventItem>(`/events/${encodeURIComponent(id)}`))
+      } catch (error) {
         console.error("Error fetching event:", error)
-      } else {
-        setEvent(data as EventItem)
       }
       setLoading(false)
     }

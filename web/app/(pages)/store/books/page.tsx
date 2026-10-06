@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useMemo, useState } from "react"
-import { supabase } from "@/utils/supabase"
+import { api, Paginated } from "@/lib/api"
 import { Book } from "@/types/books"
 import { PayButton } from "@/components/store/PayButton"
 
@@ -15,18 +15,15 @@ export default function BooksPage() {
   const [loading, setLoading] = useState(true)
   const [searching, setSearching] = useState(false)
 
-  // Fetch books from Supabase
+  // Fetch books from the API
   useEffect(() => {
     async function loadBooks() {
       setLoading(true)
-      const { data, error } = await supabase
-        .from("books")
-        .select("*")
-      
-      if (error) {
+      try {
+        const res = await api.get<Paginated<Book>>("/store/books?limit=100")
+        setBooks(res.data)
+      } catch (error) {
         console.error("Error fetching books:", error)
-      } else {
-        setBooks((data as Book[]) ?? [])
       }
       setLoading(false)
     }
@@ -182,7 +179,7 @@ export default function BooksPage() {
                           <span className="text-sm font-bold text-primary">GHS {book.price.toFixed(2)}</span>
                         </div>
                       </div>
-                      <PayButton itemName={book.title} priceGHS={book.price} itemType="book" />
+                      <PayButton itemId={book.id} itemName={book.title} priceGHS={book.price} itemType="book" />
                     </div>
                   </div>
                 </article>

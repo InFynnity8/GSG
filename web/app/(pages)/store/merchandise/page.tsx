@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useMemo, useState } from "react"
-import { supabase } from "@/utils/supabase"
+import { api, Paginated } from "@/lib/api"
 import { Merch } from "@/types/merchant"
 import { PayButton } from "@/components/store/PayButton"
 
@@ -15,18 +15,15 @@ export default function MerchandisePage() {
   const [loading, setLoading] = useState(true)
   const [searching, setSearching] = useState(false)
 
-  // Fetch merchandise from Supabase
+  // Fetch merchandise from the API
   useEffect(() => {
     async function loadMerch() {
       setLoading(true)
-      const { data, error } = await supabase
-        .from("merchandise")
-        .select("*")
-      
-      if (error) {
+      try {
+        const res = await api.get<Paginated<Merch>>("/store/merchandise?limit=100")
+        setMerch(res.data)
+      } catch (error) {
         console.error("Error fetching merchandise:", error)
-      } else {
-        setMerch((data as Merch[]) ?? [])
       }
       setLoading(false)
     }
@@ -175,7 +172,7 @@ export default function MerchandisePage() {
                         <span className="text-[10px] uppercase font-bold text-slate-400">Price</span>
                         <span className="text-lg font-bold text-primary">GHS {item.price.toFixed(2)}</span>
                       </div>
-                      <PayButton itemName={item.title} priceGHS={item.price} itemType="merchandise" />
+                      <PayButton itemId={item.id} itemName={item.title} priceGHS={item.price} itemType="merchandise" />
                     </div>
                   </div>
                 </article>

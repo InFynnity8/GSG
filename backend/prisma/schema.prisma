@@ -1,13 +1,541 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// GSG (God Seeking Generation) website — data model
+// Every piece of dynamic content on the public website lives here, plus the
+// records the website collects (contact messages, subscribers, orders, ...).
+//
+// Conventions
+//  - ids are UUIDs (string), timestamps are timestamptz
+//  - `isPublished` / `isActive` gate what the public API returns
+//  - `sortOrder` drives manual ordering in the admin UI
+//  - files are stored in Neon Object Storage; rows keep the public URL plus the
+//    object key (`*Key`) so the file can be deleted later
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+  runtime      = "nodejs"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Admin users (people who manage the website content)
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum AdminRole {
+  SUPER_ADMIN // everything, including managing other admins
+  ADMIN // all content + submissions
+  EDITOR // content only
+}
+
+model AdminUser {
+  id           String    @id @default(uuid()) @db.Uuid
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         AdminRole @default(EDITOR)
+  isActive     Boolean   @default(true)
+  // bumped on password change / deactivation to invalidate existing JWTs
+  tokenVersion Int       @default(0)
+  lastLoginAt  DateTime? @db.Timestamptz(3)
+  createdAt    DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime  @updatedAt @db.Timestamptz(3)
+
+  media MediaAsset[]
+
+  @@map("admin_users")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Media library (Neon Object Storage)
+// ─────────────────────────────────────────────────────────────────────────────
+
+model MediaAsset {
+  id           String     @id @default(uuid()) @db.Uuid
+  bucket       String
+  key          String     @unique
+  url          String
+  mimeType     String
+  sizeBytes    Int
+  originalName String?
+  altText      String?
+  folder       String     @default("misc")
+  uploadedById String?    @db.Uuid
+  uploadedBy   AdminUser? @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  createdAt    DateTime   @default(now()) @db.Timestamptz(3)
+
+  @@index([folder, createdAt])
+  @@map("media_assets")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Site-wide settings (singleton row, id = "default")
+// ─────────────────────────────────────────────────────────────────────────────
+
+model SiteSettings {
+  id                 String    @id @default("default")
+  churchName         String    @default("God Seeking Generation")
+  shortName          String?
+  tagline            String?
+  visionStatement    String?
+  aboutSummary       String?
+  email              String?
+  phones             String[]  @default([])
+  address            String?
+  poBox              String?
+  registrationNumber String?
+  foundedOn          DateTime? @db.Date
+  founderName        String?
+  nationalCoordinator String?
+  liveServiceUrl     String?
+  devotionalsUrl     String?
+  mapEmbedUrl        String?
+  givingContactEmail String?
+  logoUrl            String?
+  logoKey            String?
+  updatedAt          DateTime  @updatedAt @db.Timestamptz(3)
+
+  @@map("site_settings")
+}
+
+model SocialLink {
+  id        String   @id @default(uuid()) @db.Uuid
+  platform  String // youtube | facebook | instagram | twitter | tiktok | whatsapp | ...
+  label     String?
+  url       String
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@map("social_links")
+}
+
+// Homepage / give-page counters (Founded 2010, Branches 8+, ...)
+model SiteStat {
+  id         String   @id @default(uuid()) @db.Uuid
+  label      String
+  value      String
+  showOnHome Boolean  @default(true)
+  showOnGive Boolean  @default(false)
+  sortOrder  Int      @default(0)
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime @updatedAt @db.Timestamptz(3)
+
+  @@map("site_stats")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Homepage hero carousel
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+model HeroSlide {
+  id                String    @id @default(uuid()) @db.Uuid
+  mediaType         MediaType @default(IMAGE)
+  mediaUrl          String
+  mediaKey          String?
+  posterUrl         String? // still image shown while a video loads
+  title             String?
+  subtitle          String?
+  primaryCtaLabel   String?
+  primaryCtaHref    String?
+  secondaryCtaLabel String?
+  secondaryCtaHref  String?
+  sortOrder         Int       @default(0)
+  isActive          Boolean   @default(true)
+  createdAt         DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime  @updatedAt @db.Timestamptz(3)
+
+  @@index([isActive, sortOrder])
+  @@map("hero_slides")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Static-page sections: history timeline, mission points, core values
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum PageSectionType {
+  HISTORY // /about/history timeline blocks
+  MISSION // /about/mission points
+  CORE_VALUE // homepage values
+}
+
+model PageSection {
+  id          String          @id @default(uuid()) @db.Uuid
+  type        PageSectionType
+  title       String
+  body        String
+  icon        String? // lucide icon name, e.g. "BookOpen"
+  color       String? // tailwind accent class or hex
+  listItems   String[]        @default([])
+  sortOrder   Int             @default(0)
+  isPublished Boolean         @default(true)
+  createdAt   DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime        @updatedAt @db.Timestamptz(3)
+
+  @@index([type, isPublished, sortOrder])
+  @@map("page_sections")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Branches, service times, leaders, departments
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Branch {
+  id             String        @id @default(uuid()) @db.Uuid
+  name           String // "Zion"
+  slug           String        @unique
+  fullName       String? // "Zion – KNUST Campus"
+  location       String
+  address        String?
+  description    String?
+  phone          String?
+  email          String?
+  pastorName     String?
+  isHeadquarters Boolean       @default(false)
+  accent         String? // UI accent colour
+  mapUrl         String?
+  latitude       Float?
+  longitude      Float?
+  imageUrl       String?
+  imageKey       String?
+  showOnContact  Boolean       @default(true)
+  sortOrder      Int           @default(0)
+  isPublished    Boolean       @default(true)
+  createdAt      DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime      @updatedAt @db.Timestamptz(3)
+
+  serviceTimes ServiceTime[]
+  events       Event[]
+
+  @@index([isPublished, sortOrder])
+  @@map("branches")
+}
+
+enum DayOfWeek {
+  SUNDAY
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+}
+
+model ServiceTime {
+  id          String    @id @default(uuid()) @db.Uuid
+  branchId    String?   @db.Uuid // null = church-wide / online
+  branch      Branch?   @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  name        String // "Sunday Worship"
+  day         DayOfWeek
+  startTime   String // "09:00" (24h)
+  endTime     String?
+  description String?
+  isOnline    Boolean   @default(false)
+  sortOrder   Int       @default(0)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(3)
+
+  @@index([branchId])
+  @@map("service_times")
+}
+
+enum LeaderGroup {
+  LEADERSHIP // /about/leadership cards with bio + photo
+  PATRON // board of patrons
+  DIRECTORY // contact page leadership directory
+}
+
+model Leader {
+  id          String      @id @default(uuid()) @db.Uuid
+  group       LeaderGroup @default(LEADERSHIP)
+  name        String
+  role        String? // "Founder & General Overseer"
+  title       String? // honorific for patrons, e.g. "Rev. Dr."
+  bio         String?
+  phone       String?
+  email       String?
+  imageUrl    String?
+  imageKey    String?
+  sortOrder   Int         @default(0)
+  isPublished Boolean     @default(true)
+  createdAt   DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime    @updatedAt @db.Timestamptz(3)
+
+  @@index([group, isPublished, sortOrder])
+  @@map("leaders")
+}
+
+model Department {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String
+  slug        String   @unique
+  icon        String? // lucide icon name
+  description String
+  activity    String?
+  leadName    String?
+  imageUrl    String?
+  imageKey    String?
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+
+  @@map("departments")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Events
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Event {
+  id               String    @id @default(uuid()) @db.Uuid
+  title            String
+  slug             String    @unique
+  type             String // convention | camp meeting | outreach | prayer | ...
+  description      String
+  date             DateTime  @db.Date // start date (YYYY-MM-DD)
+  time             String? // "18:30" or "18:30:00" (24h, local church time)
+  endDate          DateTime? @db.Date
+  endTime          String?
+  venue            String
+  image            String?
+  imageKey         String?
+  registrationUrl  String?
+  livestreamUrl    String?
+  branchId         String?   @db.Uuid
+  branch           Branch?   @relation(fields: [branchId], references: [id], onDelete: SetNull)
+  isFeatured       Boolean   @default(false)
+  isPublished      Boolean   @default(true)
+  createdAt        DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime  @updatedAt @db.Timestamptz(3)
+
+  @@index([isPublished, date])
+  @@index([type])
+  @@map("events")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Store
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Book {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  slug        String   @unique
+  author      String
+  description String?
+  category    String?
+  price       Decimal  @db.Decimal(10, 2)
+  currency    String   @default("GHS")
+  image       String
+  imageKey    String?
+  stock       Int? // null = not tracked
+  isPublished Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+
+  orders Order[]
+
+  @@index([isPublished, category])
+  @@map("books")
+}
+
+model Merchandise {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  slug        String   @unique
+  description String?
+  category    String
+  price       Decimal  @db.Decimal(10, 2)
+  currency    String   @default("GHS")
+  image       String
+  imageKey    String?
+  sizes       String[] @default([])
+  stock       Int?
+  isPublished Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+
+  orders Order[]
+
+  @@index([isPublished, category])
+  @@map("merchandise")
+}
+
+enum OrderItemType {
+  BOOK
+  MERCHANDISE
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  ABANDONED
+  FULFILLED
+  REFUNDED
+}
+
+// One row per checkout. Created by the API (server-side price), paid through
+// Paystack, confirmed by the signed webhook or the verify endpoint.
+model Order {
+  id            String        @id @default(uuid()) @db.Uuid
+  reference     String        @unique // sent to Paystack as `reference`
+  itemType      OrderItemType
+  bookId        String?       @db.Uuid
+  book          Book?         @relation(fields: [bookId], references: [id], onDelete: SetNull)
+  merchandiseId String?       @db.Uuid
+  merchandise   Merchandise?  @relation(fields: [merchandiseId], references: [id], onDelete: SetNull)
+  itemName      String // snapshot at time of purchase
+  size          String?
+  quantity      Int           @default(1)
+  unitPrice     Decimal       @db.Decimal(10, 2)
+  amount        Decimal       @db.Decimal(10, 2)
+  currency      String        @default("GHS")
+  buyerName     String
+  buyerEmail    String
+  buyerPhone    String?
+  status        OrderStatus   @default(PENDING)
+  providerTxnId String?
+  channel       String? // card | mobile_money | bank ...
+  paidAt        DateTime?     @db.Timestamptz(3)
+  notes         String?
+  createdAt     DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime      @updatedAt @db.Timestamptz(3)
+
+  @@index([status, createdAt])
+  @@index([buyerEmail])
+  @@map("orders")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Giving
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum GivingMethodType {
+  MOBILE_MONEY
+  BANK_TRANSFER
+  CARD
+  OTHER
+}
+
+model GivingMethod {
+  id            String           @id @default(uuid()) @db.Uuid
+  type          GivingMethodType
+  provider      String // "MTN MoMo", "Telecel Cash", "GCB Bank"
+  accountName   String?
+  accountNumber String?
+  bankBranch    String?
+  swiftCode     String?
+  instructions  String?
+  qrImageUrl    String?
+  qrImageKey    String?
+  sortOrder     Int              @default(0)
+  isActive      Boolean          @default(true)
+  createdAt     DateTime         @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime         @updatedAt @db.Timestamptz(3)
+
+  @@map("giving_methods")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Submissions from the public website
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum MessageStatus {
+  NEW
+  READ
+  REPLIED
+  ARCHIVED
+}
+
+model ContactMessage {
+  id        String        @id @default(uuid()) @db.Uuid
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String
+  status    MessageStatus @default(NEW)
+  createdAt DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime      @updatedAt @db.Timestamptz(3)
+
+  @@index([status, createdAt])
+  @@map("contact_messages")
+}
+
+enum SubscriberStatus {
+  SUBSCRIBED
+  UNSUBSCRIBED
+}
+
+model NewsletterSubscriber {
+  id               String           @id @default(uuid()) @db.Uuid
+  email            String           @unique
+  name             String?
+  status           SubscriberStatus @default(SUBSCRIBED)
+  unsubscribeToken String           @unique @default(uuid())
+  source           String?          @default("website")
+  subscribedAt     DateTime         @default(now()) @db.Timestamptz(3)
+  unsubscribedAt   DateTime?        @db.Timestamptz(3)
+
+  @@index([status])
+  @@map("newsletter_subscribers")
+}
+
+enum PrayerRequestStatus {
+  NEW
+  PRAYING
+  ANSWERED
+  ARCHIVED
+}
+
+model PrayerRequest {
+  id          String              @id @default(uuid()) @db.Uuid
+  name        String?
+  email       String?
+  phone       String?
+  request     String
+  isAnonymous Boolean             @default(false)
+  isPrivate   Boolean             @default(true) // pastors only
+  status      PrayerRequestStatus @default(NEW)
+  createdAt   DateTime            @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime            @updatedAt @db.Timestamptz(3)
+
+  @@index([status, createdAt])
+  @@map("prayer_requests")
+}
+
+enum TestimonyStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Testimony {
+  id        String          @id @default(uuid()) @db.Uuid
+  name      String
+  email     String?
+  title     String?
+  content   String
+  imageUrl  String?
+  imageKey  String?
+  status    TestimonyStatus @default(PENDING) // only APPROVED is public
+  createdAt DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime        @updatedAt @db.Timestamptz(3)
+
+  @@index([status, createdAt])
+  @@map("testimonies")
 }

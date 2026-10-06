@@ -5,6 +5,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
+      // Neon Object Storage (uploads from the admin panel)
+      { protocol: "https", hostname: "**.aws.neon.tech" },
     ],
   },
 };

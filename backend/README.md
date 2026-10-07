@@ -35,7 +35,7 @@ npm run start:dev      # http://localhost:3000/docs
 
 Use these service settings:
 
-- **Build command:** `npm ci && npm run build && npx prisma migrate deploy`
+- **Build command:** `npm ci --include=dev && npm run build && npx prisma migrate deploy` (`--include=dev` is needed because `NODE_ENV=production` would otherwise skip the build tools)
 - **Start command:** `npm run start:prod`
 - **Health check path:** `/health`
 - **Environment:** every variable in `.env.example`, with these production values:

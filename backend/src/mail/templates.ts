@@ -131,26 +131,49 @@ export function contactNotification(
   };
 }
 
-export function contactAutoReply(
-  brand: Brand,
-  m: { name: string; message: string },
-) {
+export function contactAutoReply(brand: Brand) {
+  // Deliberately static: echoing the sender's name or message would let anyone
+  // send arbitrary text to any address from the church's domain.
   return {
     subject: `We received your message — ${brand.churchName}`,
     html: layout(
       brand,
-      `Thank you, ${m.name}`,
+      'Thank you for contacting us',
       p(
         'We have received your message and someone from our team will get back to you soon. God bless you.',
-      ) +
-        p('For reference, here is what you sent:') +
-        quote(m.message),
+      ) + p("If you didn't send this message, you can ignore this email."),
     ),
-    text: `Thank you, ${m.name}.\n\nWe have received your message and someone from our team will get back to you soon. God bless you.\n\n— ${brand.churchName}`,
+    text: `Thank you for contacting us.
+
+We have received your message and someone from our team will get back to you soon. God bless you.
+
+If you didn't send this message, you can ignore this email.
+
+— ${brand.churchName}`,
   };
 }
 
 // ── Newsletter ─────────────────────────────────────────────────────────────
+
+/** Double opt-in confirmation. Contains nothing the requester typed. */
+export function newsletterConfirm(brand: Brand, confirmUrl: string) {
+  return {
+    subject: `Confirm your subscription — ${brand.churchName}`,
+    html: layout(
+      brand,
+      'Confirm your subscription',
+      p('Please confirm that you want to receive the church newsletter.') +
+        button('Confirm subscription', confirmUrl) +
+        p(
+          "If you didn't sign up, ignore this email and you won't be subscribed.",
+        ),
+    ),
+    text: `Please confirm that you want to receive the ${brand.churchName} newsletter:
+${confirmUrl}
+
+If you didn't sign up, ignore this email and you won't be subscribed.`,
+  };
+}
 
 export function newsletterWelcome(
   brand: Brand,
@@ -160,7 +183,7 @@ export function newsletterWelcome(
     subject: `Welcome to the ${brand.churchName} newsletter`,
     html: layout(
       brand,
-      `Welcome${s.name ? `, ${s.name}` : ''}!`,
+      'Welcome!',
       p(
         "Thank you for subscribing. You'll now receive news about upcoming events, conventions, camp meetings and what God is doing across our branches.",
       ) + button('Visit our website', brand.websiteUrl),
@@ -201,15 +224,12 @@ export function prayerNotification(
   };
 }
 
-export function prayerAcknowledgement(
-  brand: Brand,
-  r: { name?: string | null },
-) {
+export function prayerAcknowledgement(brand: Brand) {
   return {
     subject: `We are praying with you — ${brand.churchName}`,
     html: layout(
       brand,
-      `We are praying with you${r.name ? `, ${r.name}` : ''}`,
+      'We are praying with you',
       p(
         'Your prayer request has been received and shared with our prayer team. "The effective, fervent prayer of a righteous man avails much." — James 5:16',
       ),

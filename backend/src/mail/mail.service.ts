@@ -85,7 +85,7 @@ export class MailService {
         replyTo: m.email,
         key: `contact-notify-${m.id}`,
       }),
-      this.send(m.email, t.contactAutoReply(this.brand, m), {
+      this.send(m.email, t.contactAutoReply(this.brand), {
         key: `contact-reply-${m.id}`,
       }),
     ]);
@@ -104,7 +104,7 @@ export class MailService {
         key: `prayer-notify-${r.id}`,
       }),
       r.email && !r.isAnonymous
-        ? this.send(r.email, t.prayerAcknowledgement(this.brand, r), {
+        ? this.send(r.email, t.prayerAcknowledgement(this.brand), {
             key: `prayer-ack-${r.id}`,
           })
         : null,
@@ -151,6 +151,18 @@ export class MailService {
 
   unsubscribeUrl(token: string) {
     return `${this.brand.websiteUrl}/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
+  }
+
+  confirmUrl(token: string) {
+    return `${this.brand.websiteUrl}/newsletter/confirm?token=${encodeURIComponent(token)}`;
+  }
+
+  /** Double opt-in: ask the address owner to confirm. Never touches Resend contacts. */
+  async newsletterConfirmRequest(email: string, token: string) {
+    await this.send(
+      email,
+      t.newsletterConfirm(this.brand, this.confirmUrl(token)),
+    );
   }
 
   async newsletterSubscribed(s: {

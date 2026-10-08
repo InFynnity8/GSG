@@ -477,6 +477,7 @@ model ContactMessage {
 }
 
 enum SubscriberStatus {
+  PENDING // signed up, waiting for email confirmation
   SUBSCRIBED
   UNSUBSCRIBED
 }

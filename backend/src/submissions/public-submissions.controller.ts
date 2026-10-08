@@ -46,25 +46,47 @@ export class PublicSubmissionsController {
   @HttpCode(200)
   async subscribe(@Body() { website, email, name }: SubscribeDto) {
     if (website) return OK;
+    // Double opt-in: nothing is subscribed until the owner of the address
+    // clicks the confirmation link. Existing rows keep their stored name, and
+    // an already-active subscriber gets no extra email.
     const existing = await this.prisma.newsletterSubscriber.findUnique({
       where: { email },
-      select: { status: true },
     });
-    const subscriber = await this.prisma.newsletterSubscriber.upsert({
-      where: { email },
-      update: {
-        status: 'SUBSCRIBED',
-        unsubscribedAt: null,
-        ...(name ? { name } : {}),
-      },
-      create: { email, name },
+    if (existing?.status === 'SUBSCRIBED') return OK;
+    const subscriber = existing
+      ? await this.prisma.newsletterSubscriber.update({
+          where: { email },
+          data: { status: 'PENDING' },
+        })
+      : await this.prisma.newsletterSubscriber.create({
+          data: { email, name, status: 'PENDING' },
+        });
+    void this.mail.newsletterConfirmRequest(
+      subscriber.email,
+      subscriber.unsubscribeToken,
+    );
+    return OK;
+  }
+
+  /** Second step of double opt-in: the link in the confirmation email. */
+  @Throttle(FORM_LIMIT)
+  @Post('newsletter/confirm')
+  @HttpCode(200)
+  async confirm(@Body() { token }: UnsubscribeDto) {
+    const subscriber = await this.prisma.newsletterSubscriber.findUnique({
+      where: { unsubscribeToken: token },
     });
-    // Welcome email for first-time and returning (previously unsubscribed)
-    // subscribers; nothing for repeat submissions of an active address.
-    void this.mail.newsletterSubscribed({
-      ...subscriber,
-      isNew: existing?.status !== 'SUBSCRIBED',
-    });
+    if (subscriber?.status === 'PENDING') {
+      await this.prisma.newsletterSubscriber.update({
+        where: { id: subscriber.id },
+        data: {
+          status: 'SUBSCRIBED',
+          unsubscribedAt: null,
+          subscribedAt: new Date(),
+        },
+      });
+      void this.mail.newsletterSubscribed({ ...subscriber, isNew: true });
+    }
     return OK;
   }
 
@@ -75,7 +97,7 @@ export class PublicSubmissionsController {
     const subscriber = await this.prisma.newsletterSubscriber.findUnique({
       where: { unsubscribeToken: token },
     });
-    if (subscriber?.status === 'SUBSCRIBED') {
+    if (subscriber && subscriber.status !== 'UNSUBSCRIBED') {
       await this.prisma.newsletterSubscriber.update({
         where: { id: subscriber.id },
         data: { status: 'UNSUBSCRIBED', unsubscribedAt: new Date() },

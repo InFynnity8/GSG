@@ -52,7 +52,7 @@ export const envValidationSchema = Joi.object({
   MAIL_LOGO_URL: Joi.string().uri().allow(''),
   ADMIN_URL: Joi.string().uri().allow(''),
 
-  SWAGGER_ENABLED: Joi.boolean().default(true),
+  SWAGGER_ENABLED: Joi.boolean().default(false), // API docs are opt-in
   THROTTLE_TTL_MS: Joi.number().default(60_000),
   THROTTLE_LIMIT: Joi.number().default(120),
 });

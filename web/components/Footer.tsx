@@ -36,7 +36,7 @@ const Footer = () => {
   async function onSubmit(data: z.infer<typeof formSchema>) {
     try {
       await api.post("/newsletter/subscribe", data);
-      toast.success("Thank you for subscribing! Check your inbox for a welcome email.", {
+      toast.success("Almost done! Check your inbox and tap the link to confirm your subscription.", {
         position: "bottom-right",
       });
       form.reset();

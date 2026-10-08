@@ -16,7 +16,7 @@ async function bootstrap() {
   configureApp(app);
   app.enableShutdownHooks();
 
-  if (config.get<boolean>('SWAGGER_ENABLED', true)) {
+  if (config.get<boolean>('SWAGGER_ENABLED', false)) {
     const document = SwaggerModule.createDocument(
       app,
       new DocumentBuilder()
